@@ -1,0 +1,4156 @@
+(* Content-type: application/vnd.wolfram.cdf.text *)
+
+(*** Wolfram CDF File ***)
+(* http://www.wolfram.com/cdf *)
+
+(* CreatedBy='Wolfram 15.0' *)
+
+(*************************************************************************)
+(*                                                                       *)
+(*                                                                       *)
+(*  This file was created under the Wolfram Enterprise licensing terms.  *)
+(*                                                                       *)
+(*       For additional information concerning CDF licensing see:        *)
+(*                                                                       *)
+(*        www.wolfram.com/cdf/adopting-cdf/licensing-options.html        *)
+(*                                                                       *)
+(*                                                                       *)
+(*                                                                       *)
+(*************************************************************************)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[      1060,         20]
+NotebookDataLength[    152946,       4134]
+NotebookOptionsPosition[    141759,       4012]
+NotebookOutlinePosition[    142076,       4026]
+CellTagsIndexPosition[    142033,       4023]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell["Hochschild Algebra in Book Notation", "Title",ExpressionUUID->"4d0b799c-ca7d-4e7f-88b5-681714b91ee3"],
+
+Cell[TextData[{
+ "The infix operators ",
+ Cell[BoxData["\[CircleTimes]"],ExpressionUUID->
+  "46b2b93e-bd0c-4e11-96c3-5eb39bc55319"],
+ " and ",
+ Cell[BoxData["\[CirclePlus]"],ExpressionUUID->
+  "1e84089b-eb03-4a29-9940-1a5645820a51"]
+}], "Subtitle",ExpressionUUID->"96056b27-a287-4306-977f-d61200efa4ae"],
+
+Cell["\[Copyright] Computational Classnotes \[CenterDot] CC BY-NC-SA 4.0", \
+"Text",ExpressionUUID->"e1fa1079-2c2b-47e1-aeca-45a8cb599162"],
+
+Cell[BoxData[
+ RowBox[{"DateString", "[", "]"}]], "Input",
+ Editable->False,
+ Deletable->False,
+ Evaluatable->False,
+ CellLabel->"Created:",ExpressionUUID->"4479dad3-abaa-4a94-a10d-297e5d8a70c0"],
+
+Cell[BoxData["\<\"Wed 18 Nov 2026 01:37:47\"\>"], "Output",
+ Editable->False,
+ Deletable->False,
+ CellLabel->"Created:",ExpressionUUID->"882dddcd-a138-44ad-bbb4-f55a8dda7473"],
+
+Cell[TextData[{
+ "Products and sums are written as in the books: ",
+ Cell[BoxData[
+  FormBox[
+   FormBox[
+    TagBox[
+     RowBox[{"a", "\[CircleTimes]", "b"}],
+     HoldForm],
+    TraditionalForm], TraditionalForm]],ExpressionUUID->
+  "45398257-2690-44e8-bbb5-b43da6217fdf"],
+ " for the product and ",
+ Cell[BoxData[
+  FormBox[
+   FormBox[
+    TagBox[
+     RowBox[{"a", "\[CirclePlus]", "b"}],
+     HoldForm],
+    TraditionalForm], TraditionalForm]],ExpressionUUID->
+  "0c053857-6f6d-4437-a315-f6a32158d7b9"],
+ " for the sum. Type the symbols with Esc c* Esc and Esc c+ Esc. Scalars \
+multiply by juxtaposition, as in ",
+ Cell[BoxData[
+  FormBox[
+   FormBox[
+    TagBox[
+     RowBox[{"q", " ", 
+      RowBox[{"x", "\[CircleTimes]", "y"}]}],
+     HoldForm],
+    TraditionalForm], TraditionalForm]],ExpressionUUID->
+  "ffd71909-8d97-4d53-bd98-e02d625ca023"],
+ ", and -a is the additive inverse. Keep this notebook next to \
+HochschildKit.wl."
+}], "Text",ExpressionUUID->"243176e1-27de-47e3-8865-dbfb6d9b74de"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"SetDirectory", "[", 
+   RowBox[{"NotebookDirectory", "[", "]"}], "]"}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"Get", "[", "\"\<HochschildKit.wl\>\"", "]"}], ";"}]}], "Input",Expr\
+essionUUID->"993487b9-5c1c-4a4d-a4a6-1bb0392d9360"],
+
+Cell["0. Intuition: what is a cochain?", "Section",ExpressionUUID->"673f9eac-0824-42df-bbbb-fc4e3447b521"],
+
+Cell["Cochains in geometry", "Subsection",ExpressionUUID->"c657e7c2-1410-4592-9618-519bd311bd3f"],
+
+Cell["\<\
+Draw a shape out of points, edges and triangles. A 0-cochain puts a number on \
+every point, like a temperature. A 1-cochain puts a number on every edge, \
+like the work done walking along it. A 2-cochain puts a number on every \
+triangle, like the flux through it.\
+\>", "Text",ExpressionUUID->"1e55f246-5ee8-4026-bfbc-4cfa20b4fbd5"],
+
+Cell["\<\
+In two dimensions: a square cut into two triangles. Red numbers sit on the \
+points (a 0-cochain f), blue numbers on the oriented edges, green numbers \
+inside the triangles. The middle panel shows the coboundary of f: each edge \
+carries the change of f along it, and around every triangle these changes add \
+up to 0. The right panel shows a 1-cochain \[Omega] that is not a gradient; \
+its coboundary is the circulation around each triangle, a 2-cochain.\
+\>", "Text",ExpressionUUID->"420a901d-66bc-4494-b5ad-c81a41c89951"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{"a", " ", "square", " ", "cut", " ", "into", " ", "two", " ", 
+     RowBox[{"triangles", ":", " ", 
+      RowBox[{"4", " ", "points"}]}]}], ",", " ", 
+    RowBox[{"5", " ", "oriented", " ", "edges"}], ",", " ", 
+    RowBox[{"2", " ", "triangles"}]}], " ", "*)"}], "\n", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"pts", " ", "=", " ", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"0", ",", " ", "0"}], "}"}], ",", " ", 
+       RowBox[{"{", 
+        RowBox[{"1", ",", " ", "0"}], "}"}], ",", " ", 
+       RowBox[{"{", 
+        RowBox[{"1", ",", " ", "1"}], "}"}], ",", " ", 
+       RowBox[{"{", 
+        RowBox[{"0", ",", " ", "1"}], "}"}]}], "}"}]}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"edg", " ", "=", " ", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"1", ",", " ", "2"}], "}"}], ",", " ", 
+       RowBox[{"{", 
+        RowBox[{"2", ",", " ", "3"}], "}"}], ",", " ", 
+       RowBox[{"{", 
+        RowBox[{"3", ",", " ", "4"}], "}"}], ",", " ", 
+       RowBox[{"{", 
+        RowBox[{"1", ",", " ", "4"}], "}"}], ",", " ", 
+       RowBox[{"{", 
+        RowBox[{"1", ",", " ", "3"}], "}"}]}], "}"}]}], ";"}], 
+   "             ", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+    "each", " ", "edge", " ", "points", " ", "from", " ", "its", " ", "first",
+      " ", "vertex", " ", "to", " ", "its", " ", "second"}], " ", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{"tri", " ", "=", " ", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"1", ",", " ", "2", ",", " ", "3"}], "}"}], ",", " ", 
+       RowBox[{"{", 
+        RowBox[{"1", ",", " ", "3", ",", " ", "4"}], "}"}]}], "}"}]}], ";"}], 
+   "\n", 
+   RowBox[{
+    RowBox[{"fv", " ", "=", " ", 
+     RowBox[{"{", 
+      RowBox[{"5", ",", " ", "7", ",", " ", "2", ",", " ", "4"}], "}"}]}], 
+    ";"}], "                                          ", 
+   RowBox[{"(*", " ", 
+    RowBox[{"0", "-", 
+     RowBox[{"cochain", ":", " ", 
+      RowBox[{"a", " ", "number", " ", "on", " ", "each", " ", "point"}]}]}], 
+    " ", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{"dfv", " ", "=", " ", 
+     RowBox[{
+      RowBox[{
+       RowBox[{
+        RowBox[{"fv", "[", 
+         RowBox[{"[", 
+          RowBox[{"#", "[", 
+           RowBox[{"[", "2", "]"}], "]"}], "]"}], "]"}], " ", "-", " ", 
+        RowBox[{"fv", "[", 
+         RowBox[{"[", 
+          RowBox[{"#", "[", 
+           RowBox[{"[", "1", "]"}], "]"}], "]"}], "]"}]}], " ", "&"}], " ", "/@",
+       " ", "edg"}]}], ";"}], "                 ", 
+   RowBox[{"(*", " ", 
+    RowBox[{"its", " ", 
+     RowBox[{"coboundary", ":", " ", 
+      RowBox[{
+      "the", " ", "change", " ", "of", " ", "fv", " ", "along", " ", "each", " ",
+        "edge"}]}]}], " ", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{"wv", " ", "=", " ", 
+     RowBox[{"{", 
+      RowBox[{"1", ",", " ", "2", ",", " ", 
+       RowBox[{"-", "1"}], ",", " ", "3", ",", " ", "0"}], "}"}]}], ";"}], 
+   "                                      ", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+     RowBox[{"a", " ", "1"}], "-", 
+     RowBox[{
+     "cochain", " ", "that", " ", "is", " ", "not", " ", "a", " ", 
+      "gradient"}]}], " ", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"onEdge", "[", 
+      RowBox[{"c_", ",", " ", 
+       RowBox[{"{", 
+        RowBox[{"i_", ",", " ", "j_"}], "}"}]}], "]"}], " ", ":=", " ", 
+     RowBox[{"c", "[", 
+      RowBox[{"[", 
+       RowBox[{"First", "@", 
+        RowBox[{"FirstPosition", "[", 
+         RowBox[{"edg", ",", " ", 
+          RowBox[{"{", 
+           RowBox[{"i", ",", " ", "j"}], "}"}]}], "]"}]}], "]"}], "]"}]}], 
+    ";"}], "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"dTri", "[", "c_", "]"}], " ", ":=", " ", 
+     RowBox[{
+      RowBox[{
+       RowBox[{
+        RowBox[{"onEdge", "[", 
+         RowBox[{"c", ",", " ", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"#", "[", 
+             RowBox[{"[", "1", "]"}], "]"}], ",", " ", 
+            RowBox[{"#", "[", 
+             RowBox[{"[", "2", "]"}], "]"}]}], "}"}]}], "]"}], " ", "+", " ", 
+        
+        RowBox[{"onEdge", "[", 
+         RowBox[{"c", ",", " ", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"#", "[", 
+             RowBox[{"[", "2", "]"}], "]"}], ",", " ", 
+            RowBox[{"#", "[", 
+             RowBox[{"[", "3", "]"}], "]"}]}], "}"}]}], "]"}], " ", "-", " ", 
+        
+        RowBox[{"onEdge", "[", 
+         RowBox[{"c", ",", " ", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"#", "[", 
+             RowBox[{"[", "1", "]"}], "]"}], ",", " ", 
+            RowBox[{"#", "[", 
+             RowBox[{"[", "3", "]"}], "]"}]}], "}"}]}], "]"}]}], " ", "&"}], 
+      " ", "/@", " ", "tri"}]}], ";"}], "   ", 
+   RowBox[{"(*", " ", 
+    RowBox[{"circulation", " ", "around", " ", "each", " ", "triangle"}], " ",
+     "*)"}], "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"shrink", "[", 
+      RowBox[{"{", 
+       RowBox[{"a_", ",", " ", "b_"}], "}"}], "]"}], " ", ":=", " ", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"a", " ", "+", " ", 
+        RowBox[{"0.18", " ", 
+         RowBox[{"(", 
+          RowBox[{"b", " ", "-", " ", "a"}], ")"}]}]}], ",", " ", 
+       RowBox[{"b", " ", "-", " ", 
+        RowBox[{"0.18", " ", 
+         RowBox[{"(", 
+          RowBox[{"b", " ", "-", " ", "a"}], ")"}]}]}]}], "}"}]}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"faces", "[", "col_", "]"}], " ", ":=", " ", 
+     RowBox[{"{", 
+      RowBox[{"col", ",", " ", 
+       RowBox[{"EdgeForm", "[", "]"}], ",", " ", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"Polygon", "[", 
+          RowBox[{"pts", "[", 
+           RowBox[{"[", "#", "]"}], "]"}], "]"}], " ", "&"}], " ", "/@", " ", 
+        "tri"}]}], "}"}]}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"edgeArrows", "[", 
+      RowBox[{"vals_", ",", " ", "col_"}], "]"}], " ", ":=", " ", 
+     RowBox[{"{", 
+      RowBox[{"col", ",", " ", "Thick", ",", " ", 
+       RowBox[{"Arrowheads", "[", "0.07", "]"}], ",", " ", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"Arrow", "[", 
+          RowBox[{"shrink", "[", 
+           RowBox[{"pts", "[", 
+            RowBox[{"[", "#", "]"}], "]"}], "]"}], "]"}], " ", "&"}], " ", "/@",
+         " ", "edg"}], ",", "\n", "   ", 
+       RowBox[{"MapThread", "[", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"Text", "[", 
+           RowBox[{
+            RowBox[{"Style", "[", 
+             RowBox[{
+             "#1", ",", " ", "15", ",", " ", "Bold", ",", " ", "col", ",", 
+              " ", 
+              RowBox[{"Background", " ", "->", " ", "White"}]}], "]"}], ",", 
+            " ", 
+            RowBox[{"Mean", "[", 
+             RowBox[{"pts", "[", 
+              RowBox[{"[", "#2", "]"}], "]"}], "]"}]}], "]"}], " ", "&"}], ",",
+          " ", 
+         RowBox[{"{", 
+          RowBox[{"vals", ",", " ", "edg"}], "}"}]}], "]"}]}], "}"}]}], ";"}],
+    "\n", 
+   RowBox[{
+    RowBox[{"pointLabels", " ", ":=", " ", 
+     RowBox[{"{", 
+      RowBox[{"Red", ",", " ", 
+       RowBox[{"PointSize", "[", "0.05", "]"}], ",", " ", 
+       RowBox[{"Point", "[", "pts", "]"}], ",", " ", 
+       RowBox[{"MapThread", "[", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"Text", "[", 
+           RowBox[{
+            RowBox[{"Style", "[", 
+             RowBox[{
+             "#1", ",", " ", "16", ",", " ", "Bold", ",", " ", "Red"}], "]"}],
+             ",", " ", "#2", ",", " ", 
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"-", "1.6"}], ",", " ", 
+              RowBox[{"-", "1.6"}]}], "}"}]}], "]"}], " ", "&"}], ",", " ", 
+         RowBox[{"{", 
+          RowBox[{"fv", ",", " ", "pts"}], "}"}]}], "]"}]}], "}"}]}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"faceLabels", "[", "vals_", "]"}], " ", ":=", " ", 
+     RowBox[{"MapThread", "[", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"Text", "[", 
+         RowBox[{
+          RowBox[{"Style", "[", 
+           RowBox[{"#1", ",", " ", "17", ",", " ", "Bold", ",", " ", 
+            RowBox[{"Darker", "[", "Green", "]"}]}], "]"}], ",", " ", 
+          RowBox[{
+           RowBox[{"Mean", "[", 
+            RowBox[{"pts", "[", 
+             RowBox[{"[", "#2", "]"}], "]"}], "]"}], " ", "+", " ", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"0.12", " ", 
+              RowBox[{"Sign", "[", 
+               RowBox[{
+                RowBox[{"#2", "[", 
+                 RowBox[{"[", "2", "]"}], "]"}], " ", "-", " ", 
+                RowBox[{"#2", "[", 
+                 RowBox[{"[", "3", "]"}], "]"}], " ", "+", " ", "0.5"}], 
+               "]"}]}], ",", " ", "0"}], "}"}]}]}], "]"}], " ", "&"}], ",", 
+       " ", 
+       RowBox[{"{", 
+        RowBox[{"vals", ",", " ", "tri"}], "}"}]}], "]"}]}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"opts", " ", "=", " ", 
+     RowBox[{"Sequence", "[", 
+      RowBox[{
+       RowBox[{"PlotRange", " ", "->", " ", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"-", "0.35"}], ",", " ", "1.35"}], "}"}], ",", " ", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"-", "0.35"}], ",", " ", "1.35"}], "}"}]}], "}"}]}], ",", 
+       " ", 
+       RowBox[{"ImageSize", " ", "->", " ", "290"}]}], "]"}]}], ";"}], "\n", 
+   RowBox[{"GraphicsRow", "[", 
+    RowBox[{
+     RowBox[{"{", "\n", "  ", 
+      RowBox[{
+       RowBox[{"Graphics", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"faces", "[", 
+            RowBox[{"GrayLevel", "[", "0.93", "]"}], "]"}], ",", " ", "Gray", 
+           ",", " ", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"Line", "[", 
+              RowBox[{"pts", "[", 
+               RowBox[{"[", "#", "]"}], "]"}], "]"}], " ", "&"}], " ", "/@", 
+            " ", "edg"}], ",", " ", "pointLabels"}], "}"}], ",", " ", 
+         RowBox[{"PlotLabel", " ", "->", " ", 
+          RowBox[{"Style", "[", 
+           RowBox[{"\"\<0-cochain f on the points\>\"", ",", " ", "13"}], 
+           "]"}]}], ",", " ", "opts"}], "]"}], ",", "\n", "  ", 
+       RowBox[{"Graphics", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"faces", "[", 
+            RowBox[{"GrayLevel", "[", "0.93", "]"}], "]"}], ",", " ", 
+           RowBox[{"edgeArrows", "[", 
+            RowBox[{"dfv", ",", " ", "Blue"}], "]"}], ",", " ", 
+           RowBox[{"faceLabels", "[", 
+            RowBox[{"dTri", "[", "dfv", "]"}], "]"}], ",", " ", 
+           "pointLabels"}], "}"}], ",", " ", 
+         RowBox[{"PlotLabel", " ", "->", " ", 
+          RowBox[{"Style", "[", 
+           
+           RowBox[{"\"\<1-cochain \[Delta]f on the edges, \[Delta]\[Delta]f = \
+0 inside\>\"", ",", " ", "13"}], "]"}]}], ",", " ", "opts"}], "]"}], ",", 
+       "\n", "  ", 
+       RowBox[{"Graphics", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"faces", "[", 
+            RowBox[{"Lighter", "[", 
+             RowBox[{"Green", ",", " ", "0.85"}], "]"}], "]"}], ",", " ", 
+           RowBox[{"edgeArrows", "[", 
+            RowBox[{"wv", ",", " ", "Blue"}], "]"}], ",", " ", 
+           RowBox[{"faceLabels", "[", 
+            RowBox[{"dTri", "[", "wv", "]"}], "]"}]}], "}"}], ",", " ", 
+         RowBox[{"PlotLabel", " ", "->", " ", 
+          RowBox[{"Style", "[", 
+           
+           RowBox[{"\"\<1-cochain \[Omega], circulation \[Delta]\[Omega] \
+inside\>\"", ",", " ", "13"}], "]"}]}], ",", " ", "opts"}], "]"}]}], "}"}], ",",
+      "\n", " ", 
+     RowBox[{"Spacings", " ", "->", " ", "10"}], ",", " ", 
+     RowBox[{"ImageSize", " ", "->", " ", "950"}]}], "]"}]}]}]], "Input",Expre\
+ssionUUID->"02f2ba30-ef49-42a4-aec5-f026f4adeb59"],
+
+Cell[BoxData[
+ GraphicsBox[{{}, {InsetBox[
+     GraphicsBox[{
+       {GrayLevel[0.93], EdgeForm[None], PolygonBox[{{0, 0}, {1, 0}, {1, 1}}],
+         PolygonBox[{{0, 0}, {1, 1}, {0, 1}}]}, 
+       {GrayLevel[
+        0.5], {LineBox[{{0, 0}, {1, 0}}], LineBox[{{1, 0}, {1, 1}}], 
+         LineBox[{{1, 1}, {0, 1}}], LineBox[{{0, 0}, {0, 1}}], 
+         LineBox[{{0, 0}, {1, 1}}]}, 
+        {RGBColor[1, 0, 0], PointSize[0.05], 
+         PointBox[{{0, 0}, {1, 0}, {1, 1}, {0, 1}}], {InsetBox[
+           StyleBox["5",
+            StripOnInput->False,
+            LineColor->RGBColor[1, 0, 0],
+            FrontFaceColor->RGBColor[1, 0, 0],
+            BackFaceColor->RGBColor[1, 0, 0],
+            GraphicsColor->RGBColor[1, 0, 0],
+            FontSize->16,
+            FontWeight->Bold,
+            FontColor->RGBColor[1, 0, 0]], {0, 0}, 
+           ImageScaled[{-0.30000000000000004, -0.30000000000000004}]], 
+          InsetBox[
+           StyleBox["7",
+            StripOnInput->False,
+            LineColor->RGBColor[1, 0, 0],
+            FrontFaceColor->RGBColor[1, 0, 0],
+            BackFaceColor->RGBColor[1, 0, 0],
+            GraphicsColor->RGBColor[1, 0, 0],
+            FontSize->16,
+            FontWeight->Bold,
+            FontColor->RGBColor[1, 0, 0]], {1, 0}, 
+           ImageScaled[{-0.30000000000000004, -0.30000000000000004}]], 
+          InsetBox[
+           StyleBox["2",
+            StripOnInput->False,
+            LineColor->RGBColor[1, 0, 0],
+            FrontFaceColor->RGBColor[1, 0, 0],
+            BackFaceColor->RGBColor[1, 0, 0],
+            GraphicsColor->RGBColor[1, 0, 0],
+            FontSize->16,
+            FontWeight->Bold,
+            FontColor->RGBColor[1, 0, 0]], {1, 1}, 
+           ImageScaled[{-0.30000000000000004, -0.30000000000000004}]], 
+          InsetBox[
+           StyleBox["4",
+            StripOnInput->False,
+            LineColor->RGBColor[1, 0, 0],
+            FrontFaceColor->RGBColor[1, 0, 0],
+            BackFaceColor->RGBColor[1, 0, 0],
+            GraphicsColor->RGBColor[1, 0, 0],
+            FontSize->16,
+            FontWeight->Bold,
+            FontColor->RGBColor[1, 0, 0]], {0, 1}, 
+           ImageScaled[{-0.30000000000000004, -0.30000000000000004}]]}}}},
+      DefaultBaseStyle->{"PlotGraphics", "Graphics"},
+      DisplayFunction->Identity,
+      ImagePadding->{{2.3667342595538626`*^-15, 0.}, {
+       2.3667342595538626`*^-15, 0.}},
+      ImageSize->290,
+      PlotInteractivity:>True,
+      PlotLabel->FormBox[
+        StyleBox["\"0-cochain f on the points\"", 13, StripOnInput -> False], 
+        TraditionalForm],
+      PlotRange->{{-0.35, 1.35}, {-0.35, 1.35}}], {150., -159.8748046875}, 
+     ImageScaled[{0.5, 0.5}], {290., 304.5234375},
+     BaseStyle->{Graphics3DBoxOptions -> {SphericalRegion -> False}}], 
+    InsetBox[
+     GraphicsBox[{
+       {GrayLevel[0.93], EdgeForm[None], PolygonBox[{{0, 0}, {1, 0}, {1, 1}}],
+         PolygonBox[{{0, 0}, {1, 1}, {0, 1}}]}, 
+       {RGBColor[0, 0, 1], Thickness[Large], Arrowheads[
+        0.07], {ArrowBox[{{0.18, 0.}, {0.8200000000000001, 0.}}], 
+         ArrowBox[{{1., 0.18}, {1., 0.8200000000000001}}], 
+         ArrowBox[{{0.8200000000000001, 1.}, {0.18, 1.}}], 
+         ArrowBox[{{0., 0.18}, {0., 0.8200000000000001}}], 
+         ArrowBox[{{0.18, 0.18}, {0.8200000000000001, 
+          0.8200000000000001}}]}, {InsetBox[
+          StyleBox["2",
+           StripOnInput->False,
+           LineColor->RGBColor[0, 0, 1],
+           FrontFaceColor->RGBColor[0, 0, 1],
+           BackFaceColor->RGBColor[0, 0, 1],
+           GraphicsColor->RGBColor[0, 0, 1],
+           FontSize->15,
+           FontWeight->Bold,
+           FontColor->RGBColor[0, 0, 1],
+           Background->GrayLevel[1]], NCache[{Rational[1, 2], 0}, {0.5, 0}]], 
+         InsetBox[
+          StyleBox[
+           RowBox[{"-", "5"}],
+           StripOnInput->False,
+           LineColor->RGBColor[0, 0, 1],
+           FrontFaceColor->RGBColor[0, 0, 1],
+           BackFaceColor->RGBColor[0, 0, 1],
+           GraphicsColor->RGBColor[0, 0, 1],
+           FontSize->15,
+           FontWeight->Bold,
+           FontColor->RGBColor[0, 0, 1],
+           Background->GrayLevel[1]], NCache[{1, Rational[1, 2]}, {1, 0.5}]], 
+         InsetBox[
+          StyleBox["2",
+           StripOnInput->False,
+           LineColor->RGBColor[0, 0, 1],
+           FrontFaceColor->RGBColor[0, 0, 1],
+           BackFaceColor->RGBColor[0, 0, 1],
+           GraphicsColor->RGBColor[0, 0, 1],
+           FontSize->15,
+           FontWeight->Bold,
+           FontColor->RGBColor[0, 0, 1],
+           Background->GrayLevel[1]], NCache[{Rational[1, 2], 1}, {0.5, 1}]], 
+         InsetBox[
+          StyleBox[
+           RowBox[{"-", "1"}],
+           StripOnInput->False,
+           LineColor->RGBColor[0, 0, 1],
+           FrontFaceColor->RGBColor[0, 0, 1],
+           BackFaceColor->RGBColor[0, 0, 1],
+           GraphicsColor->RGBColor[0, 0, 1],
+           FontSize->15,
+           FontWeight->Bold,
+           FontColor->RGBColor[0, 0, 1],
+           Background->GrayLevel[1]], NCache[{0, Rational[1, 2]}, {0, 0.5}]], 
+         InsetBox[
+          StyleBox[
+           RowBox[{"-", "3"}],
+           StripOnInput->False,
+           LineColor->RGBColor[0, 0, 1],
+           FrontFaceColor->RGBColor[0, 0, 1],
+           BackFaceColor->RGBColor[0, 0, 1],
+           GraphicsColor->RGBColor[0, 0, 1],
+           FontSize->15,
+           FontWeight->Bold,
+           FontColor->RGBColor[0, 0, 1],
+           Background->GrayLevel[1]], 
+          NCache[{Rational[1, 2], Rational[1, 2]}, {0.5, 0.5}]]}}, {InsetBox[
+         StyleBox["0",
+          StripOnInput->False,
+          LineColor->RGBColor[0, 
+            Rational[2, 3], 0],
+          FrontFaceColor->RGBColor[0, 
+            Rational[2, 3], 0],
+          BackFaceColor->RGBColor[0, 
+            Rational[2, 3], 0],
+          GraphicsColor->RGBColor[0, 
+            Rational[2, 3], 0],
+          FontSize->17,
+          FontWeight->Bold,
+          FontColor->RGBColor[0, 
+            Rational[2, 3], 0]], 
+         NCache[{0.5466666666666666, Rational[1, 3]}, {0.5466666666666666, 
+          0.3333333333333333}]], InsetBox[
+         StyleBox["0",
+          StripOnInput->False,
+          LineColor->RGBColor[0, 
+            Rational[2, 3], 0],
+          FrontFaceColor->RGBColor[0, 
+            Rational[2, 3], 0],
+          BackFaceColor->RGBColor[0, 
+            Rational[2, 3], 0],
+          GraphicsColor->RGBColor[0, 
+            Rational[2, 3], 0],
+          FontSize->17,
+          FontWeight->Bold,
+          FontColor->RGBColor[0, 
+            Rational[2, 3], 0]], 
+         NCache[{0.21333333333333332`, Rational[2, 3]}, {0.21333333333333332`,
+           0.6666666666666666}]]}, 
+       {RGBColor[1, 0, 0], PointSize[0.05], 
+        PointBox[{{0, 0}, {1, 0}, {1, 1}, {0, 1}}], {InsetBox[
+          StyleBox["5",
+           StripOnInput->False,
+           LineColor->RGBColor[1, 0, 0],
+           FrontFaceColor->RGBColor[1, 0, 0],
+           BackFaceColor->RGBColor[1, 0, 0],
+           GraphicsColor->RGBColor[1, 0, 0],
+           FontSize->16,
+           FontWeight->Bold,
+           FontColor->RGBColor[1, 0, 0]], {0, 0}, 
+          ImageScaled[{-0.30000000000000004, -0.30000000000000004}]], InsetBox[
+          StyleBox["7",
+           StripOnInput->False,
+           LineColor->RGBColor[1, 0, 0],
+           FrontFaceColor->RGBColor[1, 0, 0],
+           BackFaceColor->RGBColor[1, 0, 0],
+           GraphicsColor->RGBColor[1, 0, 0],
+           FontSize->16,
+           FontWeight->Bold,
+           FontColor->RGBColor[1, 0, 0]], {1, 0}, 
+          ImageScaled[{-0.30000000000000004, -0.30000000000000004}]], InsetBox[
+          StyleBox["2",
+           StripOnInput->False,
+           LineColor->RGBColor[1, 0, 0],
+           FrontFaceColor->RGBColor[1, 0, 0],
+           BackFaceColor->RGBColor[1, 0, 0],
+           GraphicsColor->RGBColor[1, 0, 0],
+           FontSize->16,
+           FontWeight->Bold,
+           FontColor->RGBColor[1, 0, 0]], {1, 1}, 
+          ImageScaled[{-0.30000000000000004, -0.30000000000000004}]], InsetBox[
+          StyleBox["4",
+           StripOnInput->False,
+           LineColor->RGBColor[1, 0, 0],
+           FrontFaceColor->RGBColor[1, 0, 0],
+           BackFaceColor->RGBColor[1, 0, 0],
+           GraphicsColor->RGBColor[1, 0, 0],
+           FontSize->16,
+           FontWeight->Bold,
+           FontColor->RGBColor[1, 0, 0]], {0, 1}, 
+          ImageScaled[{-0.30000000000000004, -0.30000000000000004}]]}}},
+      DefaultBaseStyle->{"PlotGraphics", "Graphics"},
+      DisplayFunction->Identity,
+      ImagePadding->{{2.3667342595538626`*^-15, 0.}, {
+       2.3667342595538626`*^-15, 0.}},
+      ImageSize->290,
+      PlotInteractivity:>True,
+      PlotLabel->FormBox[
+        StyleBox[
+        "\"1-cochain \[Delta]f on the edges, \[Delta]\[Delta]f = 0 inside\"", 
+         13, StripOnInput -> False], TraditionalForm],
+      PlotRange->{{-0.35, 1.35}, {-0.35, 1.35}}], {450., -159.8748046875}, 
+     ImageScaled[{0.5, 0.5}], {290., 304.5234375},
+     BaseStyle->{Graphics3DBoxOptions -> {SphericalRegion -> False}}], 
+    InsetBox[
+     GraphicsBox[{
+       {RGBColor[0.85, 1., 0.85], EdgeForm[None], 
+        PolygonBox[{{0, 0}, {1, 0}, {1, 1}}], 
+        PolygonBox[{{0, 0}, {1, 1}, {0, 1}}]}, 
+       {RGBColor[0, 0, 1], Thickness[Large], Arrowheads[
+        0.07], {ArrowBox[{{0.18, 0.}, {0.8200000000000001, 0.}}], 
+         ArrowBox[{{1., 0.18}, {1., 0.8200000000000001}}], 
+         ArrowBox[{{0.8200000000000001, 1.}, {0.18, 1.}}], 
+         ArrowBox[{{0., 0.18}, {0., 0.8200000000000001}}], 
+         ArrowBox[{{0.18, 0.18}, {0.8200000000000001, 
+          0.8200000000000001}}]}, {InsetBox[
+          StyleBox["1",
+           StripOnInput->False,
+           LineColor->RGBColor[0, 0, 1],
+           FrontFaceColor->RGBColor[0, 0, 1],
+           BackFaceColor->RGBColor[0, 0, 1],
+           GraphicsColor->RGBColor[0, 0, 1],
+           FontSize->15,
+           FontWeight->Bold,
+           FontColor->RGBColor[0, 0, 1],
+           Background->GrayLevel[1]], NCache[{Rational[1, 2], 0}, {0.5, 0}]], 
+         InsetBox[
+          StyleBox["2",
+           StripOnInput->False,
+           LineColor->RGBColor[0, 0, 1],
+           FrontFaceColor->RGBColor[0, 0, 1],
+           BackFaceColor->RGBColor[0, 0, 1],
+           GraphicsColor->RGBColor[0, 0, 1],
+           FontSize->15,
+           FontWeight->Bold,
+           FontColor->RGBColor[0, 0, 1],
+           Background->GrayLevel[1]], NCache[{1, Rational[1, 2]}, {1, 0.5}]], 
+         InsetBox[
+          StyleBox[
+           RowBox[{"-", "1"}],
+           StripOnInput->False,
+           LineColor->RGBColor[0, 0, 1],
+           FrontFaceColor->RGBColor[0, 0, 1],
+           BackFaceColor->RGBColor[0, 0, 1],
+           GraphicsColor->RGBColor[0, 0, 1],
+           FontSize->15,
+           FontWeight->Bold,
+           FontColor->RGBColor[0, 0, 1],
+           Background->GrayLevel[1]], NCache[{Rational[1, 2], 1}, {0.5, 1}]], 
+         InsetBox[
+          StyleBox["3",
+           StripOnInput->False,
+           LineColor->RGBColor[0, 0, 1],
+           FrontFaceColor->RGBColor[0, 0, 1],
+           BackFaceColor->RGBColor[0, 0, 1],
+           GraphicsColor->RGBColor[0, 0, 1],
+           FontSize->15,
+           FontWeight->Bold,
+           FontColor->RGBColor[0, 0, 1],
+           Background->GrayLevel[1]], NCache[{0, Rational[1, 2]}, {0, 0.5}]], 
+         InsetBox[
+          StyleBox["0",
+           StripOnInput->False,
+           LineColor->RGBColor[0, 0, 1],
+           FrontFaceColor->RGBColor[0, 0, 1],
+           BackFaceColor->RGBColor[0, 0, 1],
+           GraphicsColor->RGBColor[0, 0, 1],
+           FontSize->15,
+           FontWeight->Bold,
+           FontColor->RGBColor[0, 0, 1],
+           Background->GrayLevel[1]], 
+          NCache[{Rational[1, 2], Rational[1, 2]}, {0.5, 0.5}]]}}, {InsetBox[
+         StyleBox["3",
+          StripOnInput->False,
+          LineColor->RGBColor[0, 
+            Rational[2, 3], 0],
+          FrontFaceColor->RGBColor[0, 
+            Rational[2, 3], 0],
+          BackFaceColor->RGBColor[0, 
+            Rational[2, 3], 0],
+          GraphicsColor->RGBColor[0, 
+            Rational[2, 3], 0],
+          FontSize->17,
+          FontWeight->Bold,
+          FontColor->RGBColor[0, 
+            Rational[2, 3], 0]], 
+         NCache[{0.5466666666666666, Rational[1, 3]}, {0.5466666666666666, 
+          0.3333333333333333}]], InsetBox[
+         StyleBox[
+          RowBox[{"-", "4"}],
+          StripOnInput->False,
+          LineColor->RGBColor[0, 
+            Rational[2, 3], 0],
+          FrontFaceColor->RGBColor[0, 
+            Rational[2, 3], 0],
+          BackFaceColor->RGBColor[0, 
+            Rational[2, 3], 0],
+          GraphicsColor->RGBColor[0, 
+            Rational[2, 3], 0],
+          FontSize->17,
+          FontWeight->Bold,
+          FontColor->RGBColor[0, 
+            Rational[2, 3], 0]], 
+         NCache[{0.21333333333333332`, Rational[2, 3]}, {0.21333333333333332`,
+           0.6666666666666666}]]}},
+      DefaultBaseStyle->{"PlotGraphics", "Graphics"},
+      DisplayFunction->Identity,
+      ImagePadding->{{2.3667342595538626`*^-15, 0.}, {
+       2.3667342595538626`*^-15, 0.}},
+      ImageSize->290,
+      PlotInteractivity:>True,
+      PlotLabel->FormBox[
+        StyleBox[
+        "\"1-cochain \[Omega], circulation \[Delta]\[Omega] inside\"", 13, 
+         StripOnInput -> False], TraditionalForm],
+      PlotRange->{{-0.35, 1.35}, {-0.35, 1.35}}], {750., -159.8748046875}, 
+     ImageScaled[{0.5, 0.5}], {290., 304.5234375},
+     BaseStyle->{Graphics3DBoxOptions -> {SphericalRegion -> False}}]}, {}},
+  ImageSize->950,
+  Method->{"IgnoreImageSizeAutomaticLimit" -> True},
+  PlotRange->{{0, 900.}, {-319.749609375, 0}},
+  PlotRangePadding->Automatic]], "Output",ExpressionUUID->"6ded7283-4148-4ebe-\
+b59d-f224796a5efa"],
+
+Cell["\<\
+In three dimensions: the surface of a tetrahedron, with a temperature on each \
+vertex (red), the change of temperature along each edge (blue arrows) and a \
+flux through each face (green, shaded by value).\
+\>", "Text",ExpressionUUID->"51e3d484-f0d4-45e6-ac01-c9f376712319"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{"a", " ", 
+     RowBox[{"tetrahedron", ":", " ", 
+      RowBox[{"4", " ", "vertices"}]}]}], ",", " ", 
+    RowBox[{"6", " ", "edges"}], ",", " ", 
+    RowBox[{"4", " ", "triangular", " ", "faces"}], ",", " ", 
+    RowBox[{
+    "all", " ", "oriented", " ", "by", " ", "increasing", " ", "vertex", " ", 
+     "number"}]}], " ", "*)"}], "\n", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"tv", " ", "=", " ", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"0", ",", " ", "0", ",", " ", "0"}], "}"}], ",", " ", 
+       RowBox[{"{", 
+        RowBox[{"1", ",", " ", "0", ",", " ", "0"}], "}"}], ",", " ", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"1", "/", "2"}], ",", " ", 
+         RowBox[{
+          RowBox[{"Sqrt", "[", "3", "]"}], "/", "2"}], ",", " ", "0"}], "}"}],
+        ",", " ", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"1", "/", "2"}], ",", " ", 
+         RowBox[{
+          RowBox[{"Sqrt", "[", "3", "]"}], "/", "6"}], ",", " ", 
+         RowBox[{"Sqrt", "[", 
+          RowBox[{"2", "/", "3"}], "]"}]}], "}"}]}], "}"}]}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"te", " ", "=", " ", 
+     RowBox[{"Subsets", "[", 
+      RowBox[{
+       RowBox[{"Range", "[", "4", "]"}], ",", " ", 
+       RowBox[{"{", "2", "}"}]}], "]"}]}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"tf", " ", "=", " ", 
+     RowBox[{"Subsets", "[", 
+      RowBox[{
+       RowBox[{"Range", "[", "4", "]"}], ",", " ", 
+       RowBox[{"{", "3", "}"}]}], "]"}]}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"f3", " ", "=", " ", 
+     RowBox[{"{", 
+      RowBox[{"3", ",", " ", "1", ",", " ", "4", ",", " ", "2"}], "}"}]}], 
+    ";"}], "                                          ", 
+   RowBox[{"(*", " ", 
+    RowBox[{"0", "-", 
+     RowBox[{"cochain", ":", " ", 
+      RowBox[{
+      "a", " ", "temperature", " ", "at", " ", "each", " ", "vertex"}]}]}], 
+    " ", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{"e3", " ", "=", " ", 
+     RowBox[{
+      RowBox[{
+       RowBox[{
+        RowBox[{"f3", "[", 
+         RowBox[{"[", 
+          RowBox[{"#", "[", 
+           RowBox[{"[", "2", "]"}], "]"}], "]"}], "]"}], " ", "-", " ", 
+        RowBox[{"f3", "[", 
+         RowBox[{"[", 
+          RowBox[{"#", "[", 
+           RowBox[{"[", "1", "]"}], "]"}], "]"}], "]"}]}], " ", "&"}], " ", "/@",
+       " ", "te"}]}], ";"}], "                   ", 
+   RowBox[{"(*", " ", 
+    RowBox[{"1", "-", 
+     RowBox[{"cochain", ":", " ", 
+      RowBox[{
+      "the", " ", "change", " ", "of", " ", "temperature", " ", "along", " ", 
+       "each", " ", "edge"}]}]}], " ", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{"g3", " ", "=", " ", 
+     RowBox[{"{", 
+      RowBox[{"2", ",", " ", 
+       RowBox[{"-", "1"}], ",", " ", "3", ",", " ", "1"}], "}"}]}], ";"}], 
+   "                                         ", 
+   RowBox[{"(*", " ", 
+    RowBox[{"2", "-", 
+     RowBox[{"cochain", ":", " ", 
+      RowBox[{
+      "a", " ", "flux", " ", "through", " ", "each", " ", "face"}]}]}], " ", 
+    "*)"}], "\n", 
+   RowBox[{
+    RowBox[{"ctr", " ", "=", " ", 
+     RowBox[{"Mean", "[", "tv", "]"}]}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"out", "[", 
+      RowBox[{"p_", ",", " ", "s_"}], "]"}], " ", ":=", " ", 
+     RowBox[{"p", " ", "+", " ", 
+      RowBox[{"s", " ", 
+       RowBox[{"(", 
+        RowBox[{"p", " ", "-", " ", "ctr"}], ")"}]}]}]}], ";"}], 
+   "                             ", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+    "push", " ", "a", " ", "label", " ", "slightly", " ", "outwards"}], " ", 
+    "*)"}], "\n", 
+   RowBox[{"Graphics3D", "[", 
+    RowBox[{
+     RowBox[{"{", "\n", "  ", 
+      RowBox[{
+       RowBox[{"MapThread", "[", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"Opacity", "[", "0.35", "]"}], ",", " ", 
+            RowBox[{
+             RowBox[{"ColorData", "[", "\"\<TemperatureMap\>\"", "]"}], "[", 
+             RowBox[{
+              RowBox[{"(", 
+               RowBox[{"#1", " ", "+", " ", "1"}], ")"}], "/", "4"}], "]"}], ",",
+             " ", 
+            RowBox[{"EdgeForm", "[", "]"}], ",", " ", 
+            RowBox[{"Polygon", "[", 
+             RowBox[{"tv", "[", 
+              RowBox[{"[", "#2", "]"}], "]"}], "]"}]}], "}"}], " ", "&"}], ",",
+          " ", 
+         RowBox[{"{", 
+          RowBox[{"g3", ",", " ", "tf"}], "}"}]}], "]"}], ",", "\n", "  ", 
+       RowBox[{"MapThread", "[", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"Text", "[", 
+           RowBox[{
+            RowBox[{"Style", "[", 
+             RowBox[{
+              RowBox[{"Row", "[", 
+               RowBox[{"{", 
+                RowBox[{"\"\<flux \>\"", ",", " ", "#1"}], "}"}], "]"}], ",", 
+              " ", "14", ",", " ", "Bold", ",", " ", 
+              RowBox[{"Darker", "[", "Green", "]"}]}], "]"}], ",", " ", 
+            RowBox[{"out", "[", 
+             RowBox[{
+              RowBox[{"Mean", "[", 
+               RowBox[{"tv", "[", 
+                RowBox[{"[", "#2", "]"}], "]"}], "]"}], ",", " ", "0.05"}], 
+             "]"}]}], "]"}], " ", "&"}], ",", " ", 
+         RowBox[{"{", 
+          RowBox[{"g3", ",", " ", "tf"}], "}"}]}], "]"}], ",", "\n", "  ", 
+       RowBox[{"{", 
+        RowBox[{"Blue", ",", " ", 
+         RowBox[{"Arrowheads", "[", "0.04", "]"}], ",", " ", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"Arrow", "[", 
+            RowBox[{"Tube", "[", 
+             RowBox[{
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{
+                 RowBox[{"tv", "[", 
+                  RowBox[{"[", 
+                   RowBox[{"#", "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "]"}], "]"}], " ", "+", 
+                 " ", 
+                 RowBox[{"0.12", " ", 
+                  RowBox[{"(", 
+                   RowBox[{
+                    RowBox[{"tv", "[", 
+                    RowBox[{"[", 
+                    RowBox[{"#", "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], "]"}], "]"}], " ", "-", 
+                    " ", 
+                    RowBox[{"tv", "[", 
+                    RowBox[{"[", 
+                    RowBox[{"#", "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "]"}], "]"}]}], ")"}]}]}],
+                 ",", " ", 
+                RowBox[{
+                 RowBox[{"tv", "[", 
+                  RowBox[{"[", 
+                   RowBox[{"#", "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], "]"}], "]"}], " ", "-", 
+                 " ", 
+                 RowBox[{"0.12", " ", 
+                  RowBox[{"(", 
+                   RowBox[{
+                    RowBox[{"tv", "[", 
+                    RowBox[{"[", 
+                    RowBox[{"#", "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], "]"}], "]"}], " ", "-", 
+                    " ", 
+                    RowBox[{"tv", "[", 
+                    RowBox[{"[", 
+                    RowBox[{"#", "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "]"}], "]"}]}], 
+                   ")"}]}]}]}], "}"}], ",", " ", "0.008"}], "]"}], "]"}], " ",
+            "&"}], " ", "/@", " ", "te"}]}], "}"}], ",", "\n", "  ", 
+       RowBox[{"MapThread", "[", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"Text", "[", 
+           RowBox[{
+            RowBox[{"Style", "[", 
+             RowBox[{
+             "#1", ",", " ", "14", ",", " ", "Bold", ",", " ", "Blue", ",", 
+              " ", 
+              RowBox[{"Background", " ", "->", " ", "White"}]}], "]"}], ",", 
+            " ", 
+            RowBox[{"out", "[", 
+             RowBox[{
+              RowBox[{"Mean", "[", 
+               RowBox[{"tv", "[", 
+                RowBox[{"[", "#2", "]"}], "]"}], "]"}], ",", " ", "0.08"}], 
+             "]"}]}], "]"}], " ", "&"}], ",", " ", 
+         RowBox[{"{", 
+          RowBox[{"e3", ",", " ", "te"}], "}"}]}], "]"}], ",", "\n", "  ", 
+       RowBox[{"{", 
+        RowBox[{"Red", ",", " ", 
+         RowBox[{"Sphere", "[", 
+          RowBox[{"tv", ",", " ", "0.035"}], "]"}]}], "}"}], ",", "\n", "  ", 
+       
+       RowBox[{"MapThread", "[", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"Text", "[", 
+           RowBox[{
+            RowBox[{"Style", "[", 
+             RowBox[{
+             "#1", ",", " ", "16", ",", " ", "Bold", ",", " ", "Red"}], "]"}],
+             ",", " ", 
+            RowBox[{"out", "[", 
+             RowBox[{"#2", ",", " ", "0.22"}], "]"}]}], "]"}], " ", "&"}], ",",
+          " ", 
+         RowBox[{"{", 
+          RowBox[{"f3", ",", " ", "tv"}], "}"}]}], "]"}]}], "}"}], ",", "\n", 
+     " ", 
+     RowBox[{"Boxed", " ", "->", " ", "False"}], ",", " ", 
+     RowBox[{"Lighting", " ", "->", " ", "\"\<Neutral\>\""}], ",", " ", 
+     RowBox[{"ViewPoint", " ", "->", " ", 
+      RowBox[{"{", 
+       RowBox[{"2.2", ",", " ", 
+        RowBox[{"-", "1.6"}], ",", " ", "1.3"}], "}"}]}], ",", " ", 
+     RowBox[{"ViewVertical", " ", "->", " ", 
+      RowBox[{"{", 
+       RowBox[{"0", ",", " ", "0", ",", " ", "1"}], "}"}]}], ",", " ", 
+     RowBox[{"ImageSize", " ", "->", " ", "520"}], ",", "\n", " ", 
+     RowBox[{"PlotLabel", " ", "->", " ", 
+      RowBox[{"Style", "[", 
+       RowBox[{"\"\<red: 0-cochain on vertices   blue: 1-cochain on edges   \
+green: 2-cochain on faces\>\"", ",", " ", "13"}], "]"}]}]}], 
+    "]"}]}]}]], "Input",ExpressionUUID->"7e5e488b-10c5-4c65-af36-\
+b8d9a4357827"],
+
+Cell[BoxData[
+ Graphics3DBox[{{
+    {RGBColor[0.955963, 0.863115, 0.283425], Opacity[0.35], EdgeForm[None], 
+     Polygon3DBox[
+      NCache[{{0, 0, 0}, {1, 0, 0}, {
+        Rational[1, 2], Rational[1, 2] 3^Rational[1, 2], 0}}, {{0, 0, 0}, {1, 
+        0, 0}, {0.5, 0.8660254037844386, 0}}]]}, 
+    {RGBColor[0.178927, 0.305394, 0.933501], Opacity[0.35], EdgeForm[None], 
+     Polygon3DBox[
+      NCache[{{0, 0, 0}, {1, 0, 0}, {
+        Rational[1, 2], Rational[1, 2] 3^Rational[-1, 2], Rational[2, 3]^
+         Rational[1, 2]}}, {{0, 0, 0}, {1, 0, 0}, {0.5, 0.2886751345948129, 
+        0.816496580927726}}]]}, 
+    {RGBColor[0.817319, 0.134127, 0.164218], Opacity[0.35], EdgeForm[None], 
+     Polygon3DBox[
+      NCache[{{0, 0, 0}, {
+        Rational[1, 2], Rational[1, 2] 3^Rational[1, 2], 0}, {
+        Rational[1, 2], Rational[1, 2] 3^Rational[-1, 2], Rational[2, 3]^
+         Rational[1, 2]}}, {{0, 0, 0}, {0.5, 0.8660254037844386, 0}, {0.5, 
+        0.2886751345948129, 0.816496580927726}}]]}, 
+    {RGBColor[0.984192, 0.987731, 0.911643], Opacity[0.35], EdgeForm[None], 
+     Polygon3DBox[
+      NCache[{{1, 0, 0}, {
+        Rational[1, 2], Rational[1, 2] 3^Rational[1, 2], 0}, {
+        Rational[1, 2], Rational[1, 2] 3^Rational[-1, 2], Rational[2, 3]^
+         Rational[1, 2]}}, {{1, 0, 0}, {0.5, 0.8660254037844386, 0}, {0.5, 
+        0.2886751345948129, 0.816496580927726}}]]}}, {Text3DBox[
+     StyleBox[
+      TemplateBox[{"\"flux \"", "2"},
+       "RowDefault"],
+      StripOnInput->False,
+      LineColor->RGBColor[0, 
+        Rational[2, 3], 0],
+      FrontFaceColor->RGBColor[0, 
+        Rational[2, 3], 0],
+      BackFaceColor->RGBColor[0, 
+        Rational[2, 3], 0],
+      GraphicsColor->RGBColor[0, 
+        Rational[2, 3], 0],
+      FontSize->14,
+      FontWeight->Bold,
+      FontColor->RGBColor[0, 
+        Rational[2, 3], 0]], {0.5, 
+     0.2886751345948129, -0.010206207261596578`}], Text3DBox[
+     StyleBox[
+      TemplateBox[{"\"flux \"", 
+        RowBox[{"-", "1"}]},
+       "RowDefault"],
+      StripOnInput->False,
+      LineColor->RGBColor[0, 
+        Rational[2, 3], 0],
+      FrontFaceColor->RGBColor[0, 
+        Rational[2, 3], 0],
+      BackFaceColor->RGBColor[0, 
+        Rational[2, 3], 0],
+      GraphicsColor->RGBColor[0, 
+        Rational[2, 3], 0],
+      FontSize->14,
+      FontWeight->Bold,
+      FontColor->RGBColor[0, 
+        Rational[2, 3], 0]], {0.5, 0.08660254037844387, 
+     0.27556759606310754`}], Text3DBox[
+     StyleBox[
+      TemplateBox[{"\"flux \"", "3"},
+       "RowDefault"],
+      StripOnInput->False,
+      LineColor->RGBColor[0, 
+        Rational[2, 3], 0],
+      FrontFaceColor->RGBColor[0, 
+        Rational[2, 3], 0],
+      BackFaceColor->RGBColor[0, 
+        Rational[2, 3], 0],
+      GraphicsColor->RGBColor[0, 
+        Rational[2, 3], 0],
+      FontSize->14,
+      FontWeight->Bold,
+      FontColor->RGBColor[0, 
+        Rational[2, 3], 0]], {0.32499999999999996`, 0.3897114317029973, 
+     0.27556759606310754`}], Text3DBox[
+     StyleBox[
+      TemplateBox[{"\"flux \"", "1"},
+       "RowDefault"],
+      StripOnInput->False,
+      LineColor->RGBColor[0, 
+        Rational[2, 3], 0],
+      FrontFaceColor->RGBColor[0, 
+        Rational[2, 3], 0],
+      BackFaceColor->RGBColor[0, 
+        Rational[2, 3], 0],
+      GraphicsColor->RGBColor[0, 
+        Rational[2, 3], 0],
+      FontSize->14,
+      FontWeight->Bold,
+      FontColor->RGBColor[0, 
+        Rational[2, 3], 0]], {0.6749999999999999, 0.3897114317029973, 
+     0.27556759606310754`}]}, 
+   {RGBColor[0, 0, 1], Arrowheads[0.04], 
+    Arrow3DBox[TubeBox[{{0.12, 0., 0.}, {0.88, 0., 0.}}, 0.008]], 
+    Arrow3DBox[TubeBox[{{0.06, 0.10392304845413262`, 0.}, {0.44, 
+     0.762102355330306, 0.}}, 0.008]], 
+    Arrow3DBox[TubeBox[{{0.06, 0.034641016151377546`, 0.09797958971132711}, {
+     0.44, 0.2540341184434354, 0.7185169912163989}}, 0.008]], 
+    Arrow3DBox[TubeBox[{{0.94, 0.10392304845413262`, 0.}, {0.56, 
+     0.762102355330306, 0.}}, 0.008]], 
+    Arrow3DBox[TubeBox[{{0.94, 0.034641016151377546`, 0.09797958971132711}, {
+     0.56, 0.2540341184434354, 0.7185169912163989}}, 0.008]], 
+    Arrow3DBox[TubeBox[{{0.5, 0.7967433714816835, 0.09797958971132711}, {0.5, 
+     0.357957166897568, 0.7185169912163989}}, 0.008]]}, {Text3DBox[
+     StyleBox[
+      RowBox[{"-", "2"}],
+      StripOnInput->False,
+      LineColor->RGBColor[0, 0, 1],
+      FrontFaceColor->RGBColor[0, 0, 1],
+      BackFaceColor->RGBColor[0, 0, 1],
+      GraphicsColor->RGBColor[0, 0, 1],
+      FontSize->14,
+      FontWeight->Bold,
+      FontColor->RGBColor[0, 0, 1],
+      Background->GrayLevel[1]], {
+     0.5, -0.02309401076758503, -0.016329931618554522`}], Text3DBox[
+     StyleBox["1",
+      StripOnInput->False,
+      LineColor->RGBColor[0, 0, 1],
+      FrontFaceColor->RGBColor[0, 0, 1],
+      BackFaceColor->RGBColor[0, 0, 1],
+      GraphicsColor->RGBColor[0, 0, 1],
+      FontSize->14,
+      FontWeight->Bold,
+      FontColor->RGBColor[0, 0, 1],
+      Background->GrayLevel[1]], {0.23, 
+     0.4445597072760118, -0.016329931618554522`}], Text3DBox[
+     StyleBox[
+      RowBox[{"-", "1"}],
+      StripOnInput->False,
+      LineColor->RGBColor[0, 0, 1],
+      FrontFaceColor->RGBColor[0, 0, 1],
+      BackFaceColor->RGBColor[0, 0, 1],
+      GraphicsColor->RGBColor[0, 0, 1],
+      FontSize->14,
+      FontWeight->Bold,
+      FontColor->RGBColor[0, 0, 1],
+      Background->GrayLevel[1]], {0.23, 0.13279056191361394`, 
+     0.4245782220824176}], Text3DBox[
+     StyleBox["3",
+      StripOnInput->False,
+      LineColor->RGBColor[0, 0, 1],
+      FrontFaceColor->RGBColor[0, 0, 1],
+      BackFaceColor->RGBColor[0, 0, 1],
+      GraphicsColor->RGBColor[0, 0, 1],
+      FontSize->14,
+      FontWeight->Bold,
+      FontColor->RGBColor[0, 0, 1],
+      Background->GrayLevel[1]], {0.77, 
+     0.4445597072760118, -0.016329931618554522`}], Text3DBox[
+     StyleBox["1",
+      StripOnInput->False,
+      LineColor->RGBColor[0, 0, 1],
+      FrontFaceColor->RGBColor[0, 0, 1],
+      BackFaceColor->RGBColor[0, 0, 1],
+      GraphicsColor->RGBColor[0, 0, 1],
+      FontSize->14,
+      FontWeight->Bold,
+      FontColor->RGBColor[0, 0, 1],
+      Background->GrayLevel[1]], {0.77, 0.13279056191361394`, 
+     0.4245782220824176}], Text3DBox[
+     StyleBox[
+      RowBox[{"-", "2"}],
+      StripOnInput->False,
+      LineColor->RGBColor[0, 0, 1],
+      FrontFaceColor->RGBColor[0, 0, 1],
+      BackFaceColor->RGBColor[0, 0, 1],
+      GraphicsColor->RGBColor[0, 0, 1],
+      FontSize->14,
+      FontWeight->Bold,
+      FontColor->RGBColor[0, 0, 1],
+      Background->GrayLevel[1]], {0.5, 0.6004442799572107, 
+     0.4245782220824176}]}, 
+   {RGBColor[1, 0, 0], 
+    SphereBox[
+     NCache[{{0, 0, 0}, {1, 0, 0}, {
+       Rational[1, 2], Rational[1, 2] 3^Rational[1, 2], 0}, {
+       Rational[1, 2], Rational[1, 2] 3^Rational[-1, 2], Rational[2, 3]^
+        Rational[1, 2]}}, {{0, 0, 0}, {1, 0, 0}, {
+       0.5, 0.8660254037844386, 0}, {0.5, 0.2886751345948129, 
+       0.816496580927726}}], 0.035]}, {Text3DBox[
+     StyleBox["3",
+      StripOnInput->False,
+      LineColor->RGBColor[1, 0, 0],
+      FrontFaceColor->RGBColor[1, 0, 0],
+      BackFaceColor->RGBColor[1, 0, 0],
+      GraphicsColor->RGBColor[1, 0, 0],
+      FontSize->16,
+      FontWeight->Bold,
+      FontColor->RGBColor[
+       1, 0, 0]], {-0.11, -0.06350852961085883, -0.04490731195102494}], 
+    Text3DBox[
+     StyleBox["1",
+      StripOnInput->False,
+      LineColor->RGBColor[1, 0, 0],
+      FrontFaceColor->RGBColor[1, 0, 0],
+      BackFaceColor->RGBColor[1, 0, 0],
+      GraphicsColor->RGBColor[1, 0, 0],
+      FontSize->16,
+      FontWeight->Bold,
+      FontColor->RGBColor[1, 0, 0]], {
+     1.11, -0.06350852961085883, -0.04490731195102494}], Text3DBox[
+     StyleBox["4",
+      StripOnInput->False,
+      LineColor->RGBColor[1, 0, 0],
+      FrontFaceColor->RGBColor[1, 0, 0],
+      BackFaceColor->RGBColor[1, 0, 0],
+      GraphicsColor->RGBColor[1, 0, 0],
+      FontSize->16,
+      FontWeight->Bold,
+      FontColor->RGBColor[1, 0, 0]], {0.5, 
+     0.9930424630061563, -0.04490731195102494}], Text3DBox[
+     StyleBox["2",
+      StripOnInput->False,
+      LineColor->RGBColor[1, 0, 0],
+      FrontFaceColor->RGBColor[1, 0, 0],
+      BackFaceColor->RGBColor[1, 0, 0],
+      GraphicsColor->RGBColor[1, 0, 0],
+      FontSize->16,
+      FontWeight->Bold,
+      FontColor->RGBColor[1, 0, 0]], {0.5, 0.2886751345948129, 
+     0.9512185167808008}]}},
+  Boxed->False,
+  ImageSize->520,
+  Lighting->"Neutral",
+  PlotLabel->FormBox[
+    StyleBox[
+    "\"red: 0-cochain on vertices   blue: 1-cochain on edges   green: \
+2-cochain on faces\"", 13, StripOnInput -> False], TraditionalForm],
+  ViewPoint->{2.2, -1.6, 1.3},
+  ViewVertical->{0, 0, 1}]], "Output",ExpressionUUID->"9635d536-b8f4-4601-\
+b7ed-117e055740c5"],
+
+Cell[TextData[{
+ "The coboundary \[Delta] turns a p-cochain into a (p+1)-cochain by adding up \
+its values around the boundary, with signs. On points it is a discrete \
+gradient: ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{"\[Delta]", "f"}], ")"}], "(", 
+    RowBox[{"i", "\[Rule]", "j"}], ")", "=", 
+    RowBox[{"f", "(", "j", ")"}], "-", 
+    RowBox[{"f", "(", "i", ")"}]}], TraditionalForm]],ExpressionUUID->
+  "a4aea3d4-fdfd-4019-a0d1-f5486c738817"],
+ ". On edges it is a discrete curl. The rule ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SuperscriptBox["\[Delta]", "2"], "=", "0"}], TraditionalForm]],
+  ExpressionUUID->"de8408d0-16a2-42af-8977-2e479eba5754"],
+ " says the curl of a gradient vanishes."
+}], "Text",ExpressionUUID->"0c11c353-8ced-40b2-8630-7dad71eb5d9c"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{"a", " ", "circle", " ", "drawn", " ", "as", " ", "a", " ", 
+     RowBox[{"triangle", ":", " ", 
+      RowBox[{"vertices", " ", "1"}]}]}], ",", " ", "2", ",", " ", 
+    RowBox[{
+     RowBox[{"3", " ", "and", " ", "edges", " ", "1"}], "->", "2"}], ",", " ", 
+    RowBox[{"2", "->", "3"}], ",", " ", 
+    RowBox[{"3", "->", "1"}]}], " ", "*)"}], "\n", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"edges", " ", "=", " ", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"1", ",", " ", "2"}], "}"}], ",", " ", 
+       RowBox[{"{", 
+        RowBox[{"2", ",", " ", "3"}], "}"}], ",", " ", 
+       RowBox[{"{", 
+        RowBox[{"3", ",", " ", "1"}], "}"}]}], "}"}]}], ";"}], "\n", 
+   RowBox[{
+    RowBox[{"d0", " ", "=", " ", 
+     RowBox[{"Table", "[", 
+      RowBox[{
+       RowBox[{"Which", "[", 
+        RowBox[{
+         RowBox[{"v", " ", "==", " ", 
+          RowBox[{"e", "[", 
+           RowBox[{"[", "2", "]"}], "]"}]}], ",", " ", "1", ",", " ", 
+         RowBox[{"v", " ", "==", " ", 
+          RowBox[{"e", "[", 
+           RowBox[{"[", "1", "]"}], "]"}]}], ",", " ", 
+         RowBox[{"-", "1"}], ",", " ", "True", ",", " ", "0"}], "]"}], ",", 
+       " ", 
+       RowBox[{"{", 
+        RowBox[{"e", ",", " ", "edges"}], "}"}], ",", " ", 
+       RowBox[{"{", 
+        RowBox[{"v", ",", " ", "3"}], "}"}]}], "]"}]}], ";"}], "   ", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"(", "\[Delta]f", ")"}], 
+      RowBox[{"(", 
+       RowBox[{"i", "->", "j"}], ")"}]}], " ", "=", " ", 
+     RowBox[{
+      RowBox[{"f", 
+       RowBox[{"(", "j", ")"}]}], " ", "-", " ", 
+      RowBox[{"f", 
+       RowBox[{"(", "i", ")"}]}]}]}], " ", "*)"}], "\n", 
+   RowBox[{
+    RowBox[{"f0", " ", "=", " ", 
+     RowBox[{"{", 
+      RowBox[{"5", ",", " ", "7", ",", " ", "2"}], "}"}]}], ";"}], "       ", 
+   
+   RowBox[{"(*", " ", 
+    RowBox[{
+     RowBox[{"a", " ", "0"}], "-", 
+     RowBox[{"cochain", ":", " ", 
+      RowBox[{"a", " ", "number", " ", "on", " ", "each", " ", "vertex"}]}]}],
+     " ", "*)"}], "\n", 
+   RowBox[{"d0", " ", ".", " ", "f0", "              ", 
+    RowBox[{"(*", " ", 
+     RowBox[{"its", " ", 
+      RowBox[{"coboundary", ":", " ", 
+       RowBox[{
+       "the", " ", "change", " ", "of", " ", "f", " ", "along", " ", "each", " ",
+         "edge"}]}]}], " ", "*)"}]}]}]}]], "Input",ExpressionUUID->"08bf8042-\
+e1f0-4517-ac03-b52550fd06ef"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Total", "[", 
+   RowBox[{"d0", " ", ".", " ", "f0"}], "]"}], "       ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{"going", " ", "once", " ", "around", " ", "the", " ", "loop"}], ",",
+     " ", 
+    RowBox[{
+    "the", " ", "changes", " ", "always", " ", "add", " ", "up", " ", "to", " ",
+      "0"}]}], " ", "*)"}]}]], "Input",ExpressionUUID->"6a69f8b2-9952-4f81-\
+9396-bbaa5c378faf"],
+
+Cell[TextData[{
+ "A cochain with ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"\[Delta]", "\[Omega]", "=", "0"}], TraditionalForm]],
+  ExpressionUUID->"05812694-2739-4df9-9752-3a5a7947a6e3"],
+ " is closed (a cocycle). If it is ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"\[Omega]", "=", 
+    RowBox[{"\[Delta]", "f"}]}], TraditionalForm]],ExpressionUUID->
+  "a607ae30-91d3-4a51-b8b8-967019b092d5"],
+ " it is exact (a coboundary). Every exact cochain is closed. A closed \
+cochain that is not exact detects a hole: here, the one-unit circulation \
+around the triangle."
+}], "Text",ExpressionUUID->"1196ed3a-6fe1-425d-abbd-ab128f3ac6c1"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"\[Omega]", " ", "=", " ", 
+    RowBox[{"{", 
+     RowBox[{"1", ",", " ", "0", ",", " ", "0"}], "}"}]}], ";"}], "      ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"a", " ", "1"}], "-", 
+     RowBox[{"cochain", ":", " ", 
+      RowBox[{"1", " ", "on", " ", "the", " ", "first", " ", "edge"}]}]}], ",",
+     " ", 
+    RowBox[{
+     RowBox[{"0", " ", "elsewhere"}], ";", " ", 
+     RowBox[{"it", " ", "goes", " ", "once", " ", "around"}]}]}], " ", 
+   "*)"}]}], "\n", 
+ RowBox[{"Quiet", "@", 
+  RowBox[{"Check", "[", 
+   RowBox[{
+    RowBox[{"LinearSolve", "[", 
+     RowBox[{"d0", ",", " ", "\[Omega]"}], "]"}], ",", 
+    " ", "\"\<no solution: \[Omega] is not the coboundary of any \
+0-cochain\>\""}], "]"}]}]}], "Input",ExpressionUUID->"3d9969cb-6740-4b4a-b420-\
+47bdf546656a"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{
+    "the", " ", "hole", " ", "is", " ", "counted", " ", "by", " ", "the", " ", 
+     RowBox[{"cohomology", ":", " ", 
+      RowBox[{"dim", " ", 
+       RowBox[{"H", "^", "1"}]}]}]}], " ", "=", " ", 
+    RowBox[{
+     RowBox[{"dim", 
+      RowBox[{"(", 
+       RowBox[{"1", "-", "cochains"}], ")"}]}], " ", "-", " ", 
+     RowBox[{"rank", 
+      RowBox[{"(", "d0", ")"}]}]}]}], " ", "*)"}], "\n", 
+  RowBox[{"3", " ", "-", " ", 
+   RowBox[{"MatrixRank", "[", "d0", "]"}]}]}]], "Input",ExpressionUUID->\
+"9069416e-7fcf-4d2a-ab54-1057e781b6c3"],
+
+Cell["\<\
+Fill the triangle in and the circulation becomes the flux through the face, \
+so it is no longer closed and the hole disappears:\
+\>", "Text",ExpressionUUID->"4d28071f-1212-46f9-ad1d-e394ac30d132"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{"fill", " ", "the", " ", "triangle", " ", 
+     RowBox[{"in", ":", " ", 
+      RowBox[{"one", " ", "face"}]}]}], ",", " ", 
+    RowBox[{
+    "whose", " ", "coboundary", " ", "adds", " ", "the", " ", "three", " ", 
+     "edge", " ", "values"}]}], " ", "*)"}], "\n", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"d1", " ", "=", " ", 
+     RowBox[{"{", 
+      RowBox[{"{", 
+       RowBox[{"1", ",", " ", "1", ",", " ", "1"}], "}"}], "}"}]}], ";"}], "\n", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"d1", " ", ".", " ", "d0"}], ",", " ", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{"3", " ", "-", " ", 
+        RowBox[{"MatrixRank", "[", "d1", "]"}]}], ")"}], " ", "-", " ", 
+      RowBox[{"MatrixRank", "[", "d0", "]"}]}]}], "}"}], "     ", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+     RowBox[{"\[Delta]\[Delta]", " ", "=", " ", "0"}], ",", " ", 
+     RowBox[{
+      RowBox[{"and", " ", "the", " ", "hole", " ", "is", " ", 
+       RowBox[{"gone", ":", " ", 
+        RowBox[{"H", "^", "1"}]}]}], " ", "=", " ", "0"}]}], " ", 
+    "*)"}]}]}]], "Input",ExpressionUUID->"dc364cdf-ae63-4f14-8f99-\
+54bb6a2aa74b"],
+
+Cell["\<\
+So cohomology = closed modulo exact = the holes and twists that cannot be \
+removed by changing coordinates. This is the one idea to keep in mind for \
+everything below.\
+\>", "Text",ExpressionUUID->"2d6d0165-1638-45cc-b5a0-b75f7a5150b5"],
+
+Cell["From geometry to algebra", "Subsection",ExpressionUUID->"3b460fb5-39e3-45e4-ab1f-3f387750eeef"],
+
+Cell[TextData[{
+ "Hochschild cohomology runs the same machine on an algebra A. A simplex with \
+p+1 corners becomes a string of p elements ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"(", 
+    SubscriptBox["a", "1"], ",", "\[Ellipsis]", ",", 
+    SubscriptBox["a", "p"], ")"}], TraditionalForm]],ExpressionUUID->
+  "3c4c8620-5c2a-4de6-9cb3-41667a88b861"],
+ ", and taking a face becomes multiplying two neighbours, ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SubscriptBox["a", "i"], "\[CircleTimes]", 
+    SubscriptBox["a", 
+     RowBox[{"i", "+", "1"}]]}], TraditionalForm]],ExpressionUUID->
+  "9b2a82d2-4737-40ae-9094-0597ed057f68"],
+ ". A p-cochain assigns an element of A to every such string, and \[Delta] is \
+the alternating sum over the faces. In low degrees each formula measures a \
+familiar failure:"
+}], "Text",ExpressionUUID->"eb9f83fe-a9de-414c-8116-9ff26c86e0e5"],
+
+Cell[BoxData[
+ FormBox[
+  RowBox[{
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{"\[Delta]", "a"}], ")"}], "(", "x", ")"}], "=", 
+   RowBox[{"x", "\[CircleTimes]", "a"}], "\[CirclePlus]", 
+   RowBox[{"-", 
+    RowBox[{"(", 
+     RowBox[{"a", "\[CircleTimes]", "x"}], ")"}]}]}], 
+  TraditionalForm]], "DisplayFormula",ExpressionUUID->"828c199c-188d-482e-\
+b3ed-941eb36500bb"],
+
+Cell["\<\
+how far a is from commuting with x (zero exactly for central elements);\
+\>", "Text",ExpressionUUID->"50a6cc56-1106-4997-938f-dbbca187cd2a"],
+
+Cell[BoxData[
+ FormBox[
+  FormBox[
+   TagBox[
+    RowBox[{
+     RowBox[{
+      RowBox[{"\[Delta]", "(", "\[ScriptCapitalD]", ")"}], "\[InvisibleApplication]", 
+      RowBox[{"(", 
+       RowBox[{"a", ",", "b"}], ")"}]}], "\[LongEqual]", 
+     RowBox[{
+      RowBox[{"a", "\[CircleTimes]", 
+       RowBox[{"\[ScriptCapitalD]", "(", "b", ")"}]}], "\[CirclePlus]", 
+      RowBox[{"-", 
+       RowBox[{"\[ScriptCapitalD]", "(", 
+        RowBox[{"a", "\[CircleTimes]", "b"}], ")"}]}], "\[CirclePlus]", 
+      RowBox[{
+       RowBox[{"\[ScriptCapitalD]", "(", "a", ")"}], "\[CircleTimes]", 
+       "b"}]}]}],
+    HoldForm],
+   TraditionalForm], TraditionalForm]], "DisplayFormula",ExpressionUUID->\
+"d6d0ce33-da5c-438d-bd1f-4e106df1b52c"],
+
+Cell["\<\
+how far a linear map is from the Leibniz rule (zero exactly for derivations);\
+\
+\>", "Text",ExpressionUUID->"6b2234c4-2654-4c7c-a203-cc344dc72815"],
+
+Cell[BoxData[
+ FormBox[
+  FormBox[
+   TagBox[
+    RowBox[{
+     RowBox[{
+      RowBox[{"\[Delta]", "(", "\[Phi]", ")"}], "\[InvisibleApplication]", 
+      RowBox[{"(", 
+       RowBox[{"a", ",", "b", ",", "c"}], ")"}]}], "\[LongEqual]", 
+     RowBox[{
+      RowBox[{"a", "\[CircleTimes]", 
+       RowBox[{"\[Phi]", "(", 
+        RowBox[{"b", ",", "c"}], ")"}]}], "\[CirclePlus]", 
+      RowBox[{"-", 
+       RowBox[{"\[Phi]", "(", 
+        RowBox[{
+         RowBox[{"a", "\[CircleTimes]", "b"}], ",", "c"}], ")"}]}], "\[CirclePlus]", 
+      RowBox[{"\[Phi]", "(", 
+       RowBox[{"a", ",", 
+        RowBox[{"b", "\[CircleTimes]", "c"}]}], ")"}], "\[CirclePlus]", 
+      RowBox[{"-", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"\[Phi]", "(", 
+          RowBox[{"a", ",", "b"}], ")"}], "\[CircleTimes]", "c"}], ")"}]}]}]}],
+    HoldForm],
+   TraditionalForm], TraditionalForm]], "DisplayFormula",ExpressionUUID->\
+"647845e1-89cf-4d36-9ea5-492920f219f2"],
+
+Cell[TextData[{
+ "how far the bent product ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{"a", "\[CircleTimes]", "b"}], "\[CirclePlus]", 
+    RowBox[{"t", " ", 
+     RowBox[{"\[Phi]", "(", 
+      RowBox[{"a", ",", "b"}], ")"}]}]}], TraditionalForm]],ExpressionUUID->
+  "4644e829-083d-4f46-88d7-f7c983def535"],
+ " is from associative, to first order in t."
+}], "Text",ExpressionUUID->"f92c7cc6-527c-4907-988d-856403c1bc1d"],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {
+     StyleBox["Geometry",
+      StripOnInput->False,
+      ShowStringCharacters->False,
+      FontWeight->Bold], 
+     StyleBox[
+      RowBox[{"Algebra", " ", 
+       RowBox[{"(", "Hochschild", ")"}]}],
+      StripOnInput->False,
+      ShowStringCharacters->False,
+      FontWeight->Bold]},
+    {
+     InterpretationBox[Cell[
+      "a point",ExpressionUUID->"5aa22bf7-caa5-4e57-b11c-013bfc6cd53a"],
+      TextCell["a point"]], 
+     InterpretationBox[Cell[
+      "an element a of A",ExpressionUUID->
+       "09776a1b-0a23-404b-8c27-288d5f2c72b2"],
+      TextCell["an element a of A"]]},
+    {
+     InterpretationBox[Cell[
+      "a p-simplex",ExpressionUUID->"baaf4a5a-b271-4900-8dbe-4169b1abdff0"],
+      TextCell["a p-simplex"]], 
+     InterpretationBox[Cell[
+      "a string (a1, ..., ap) of p elements",ExpressionUUID->
+       "2e791f60-5ba3-4c9f-8e57-80ef815f134e"],
+      TextCell["a string (a1, ..., ap) of p elements"]]},
+    {
+     InterpretationBox[Cell[
+      "taking a face",ExpressionUUID->"992f7a1c-5b33-4734-85bc-dded8c169e76"],
+      
+      TextCell["taking a face"]], 
+     TemplateBox[{
+       InterpretationBox[
+        Cell["multiplying neighbours, "], 
+        TextCell["multiplying neighbours, "]], 
+       TagBox[
+        FormBox[
+         TagBox[
+          RowBox[{
+            SubscriptBox["a", "i"], "\[CircleTimes]", 
+            SubscriptBox["a", 
+             RowBox[{"i", "+", "1"}]]}], HoldForm], TraditionalForm], 
+        TraditionalForm, Editable -> True]},
+      "RowDefault"]},
+    {
+     InterpretationBox[Cell[
+      "p-cochain: a number on each p-simplex",ExpressionUUID->
+       "a9a40f0f-93fd-40ad-a294-0d129f5952e4"],
+      TextCell["p-cochain: a number on each p-simplex"]], 
+     InterpretationBox[Cell[
+      "p-cochain: an element f(a1, ..., ap) of A",ExpressionUUID->
+       "fc47dc40-2685-402b-9bca-9fb5c12184c9"],
+      TextCell["p-cochain: an element f(a1, ..., ap) of A"]]},
+    {
+     InterpretationBox[Cell[
+      "gradient, curl, divergence",ExpressionUUID->
+       "5f6f2480-0b85-41c4-9e2d-5c23dc015dd2"],
+      TextCell["gradient, curl, divergence"]], 
+     TemplateBox[{
+       InterpretationBox[
+        Cell["the Hochschild differential "], 
+        TextCell["the Hochschild differential "]], 
+       TagBox[
+        FormBox[
+         TagBox["\[Delta]", HoldForm], TraditionalForm], TraditionalForm, 
+        Editable -> True]},
+      "RowDefault"]},
+    {
+     InterpretationBox[Cell[
+      "curl of a gradient is 0",ExpressionUUID->
+       "3a28eab6-32be-4903-8ced-e53e79717402"],
+      TextCell["curl of a gradient is 0"]], 
+     TemplateBox[{
+       TagBox[
+        FormBox[
+         TagBox[
+          RowBox[{
+            SuperscriptBox["\[Delta]", "2"], "\[LongEqual]", "0"}], HoldForm],
+          TraditionalForm], TraditionalForm, Editable -> True], 
+       InterpretationBox[
+        Cell[", which comes from associativity"], 
+        TextCell[", which comes from associativity"]]},
+      "RowDefault"]},
+    {
+     InterpretationBox[Cell[
+      "closed but not exact: a hole",ExpressionUUID->
+       "fe21cf04-a3fb-4f0f-9ed5-3ac0cd64caee"],
+      TextCell["closed but not exact: a hole"]], 
+     InterpretationBox[Cell[
+      "cocycle but not coboundary: a nonzero class in HH",ExpressionUUID->
+       "70ea97cb-7066-4dd0-ae34-d6bce94127cd"],
+      TextCell["cocycle but not coboundary: a nonzero class in HH"]]},
+    {
+     InterpretationBox[Cell[
+      "a vector field",ExpressionUUID->"4e0fbe5a-3ce8-40a0-aaf7-005cd11f70da"],
+      TextCell["a vector field"]], 
+     TemplateBox[{
+       InterpretationBox[
+        Cell["a derivation, a class in "], 
+        TextCell["a derivation, a class in "]], 
+       TagBox[
+        FormBox[
+         TagBox[
+          
+          TemplateBox[{"HH", "1"}, "Superscript", SyntaxForm -> 
+           SuperscriptBox], HoldForm], TraditionalForm], TraditionalForm, 
+        Editable -> True]},
+      "RowDefault"]},
+    {
+     InterpretationBox[Cell[
+      "a Poisson bivector, to be quantized",ExpressionUUID->
+       "c3786a3a-96b2-4aa6-ad8f-ba4fe10b5599"],
+      TextCell["a Poisson bivector, to be quantized"]], 
+     TemplateBox[{
+       InterpretationBox[
+        Cell["a bend of the product, a class in "], 
+        TextCell["a bend of the product, a class in "]], 
+       TagBox[
+        FormBox[
+         TagBox[
+          
+          TemplateBox[{"HH", "2"}, "Superscript", SyntaxForm -> 
+           SuperscriptBox], HoldForm], TraditionalForm], TraditionalForm, 
+        Editable -> True]},
+      "RowDefault"]}
+   },
+   AutoDelete->False,
+   GridBoxAlignment->{"Columns" -> {{Left}}},
+   GridBoxBackground->{"Columns" -> {{None}}, "Rows" -> {
+       GrayLevel[0.93]}},
+   GridBoxFrame->{"Columns" -> {{True}}, "Rows" -> {{True}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
+   GridBoxSpacings->{"Columns" -> {{1.2}}, "Rows" -> {{0.8}}}],
+  "Grid"]], "Text",
+ FontFamily->
+  "Source Sans Pro",ExpressionUUID->"8a2a9110-5dc6-4633-a4c0-99604371df65"],
+
+Cell[TextData[{
+ "For the functions on a smooth space this dictionary is a theorem \
+(Hochschild-Kostant-Rosenberg): ",
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["HH", "1"], TraditionalForm]],ExpressionUUID->
+  "6c93c704-56e2-4676-a355-a3e7326d706c"],
+ " is exactly the vector fields and ",
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["HH", "2"], TraditionalForm]],ExpressionUUID->
+  "5dcf963b-3b19-4c80-8010-6a11b3d734b9"],
+ " the bivector fields. For a finite-dimensional algebra it is the guiding \
+picture, and section 7 shows each line of the table in action."
+}], "Text",ExpressionUUID->"d9d77d2f-0e46-4108-bec4-698ecda7c37a"],
+
+Cell["1. The two operators", "Section",ExpressionUUID->"13da029e-7dd4-4e75-aee7-46995bf1fe49"],
+
+Cell[TextData[{
+ "An element of an algebra A is stored by its coefficients in the basis of A, \
+and a Hochschild cochain by its array of values. ",
+ Cell[BoxData[
+  FormBox[
+   FormBox[
+    TagBox[
+     RowBox[{"a", "\[CircleTimes]", "b"}],
+     HoldForm],
+    TraditionalForm], TraditionalForm]],ExpressionUUID->
+  "d291968a-404c-4cee-acb4-cdc03016804d"],
+ " is the product of A on elements and the cup product on cochains; ",
+ Cell[BoxData[
+  FormBox[
+   FormBox[
+    TagBox[
+     RowBox[{"a", "\[CirclePlus]", "b"}],
+     HoldForm],
+    TraditionalForm], TraditionalForm]],ExpressionUUID->
+  "56dc2649-41e2-4b16-9ba2-bf3533de3052"],
+ " is the sum. A cochain is applied to elements as in the books, f[a, b], and \
+\[Delta] is the Hochschild differential."
+}], "Text",ExpressionUUID->"2d8b6616-b7d9-4721-a329-35dca74137a4"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"ClearAll", "[", 
+   RowBox[{
+   "Elt", ",", " ", "Coch", ",", " ", "\[Delta]", ",", " ", "Generators"}], 
+   "]"}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"zeroQ", "[", "w_", "]"}], " ", ":=", " ", 
+    RowBox[{"AllTrue", "[", 
+     RowBox[{
+      RowBox[{"Flatten", "[", 
+       RowBox[{"{", 
+        RowBox[{"Simplify", "[", "w", "]"}], "}"}], "]"}], ",", " ", 
+      RowBox[{
+       RowBox[{"#", " ", "===", " ", "0"}], " ", "&"}]}], "]"}]}], ";"}], 
+  "\n", 
+  RowBox[{"(*", " ", 
+   RowBox[{"algebra", " ", 
+    RowBox[{"elements", ":", " ", 
+     RowBox[{"Elt", "[", 
+      RowBox[{"A", ",", " ", 
+       RowBox[{
+       "coefficients", " ", "in", " ", "the", " ", "basis", " ", "of", " ", 
+        "A"}]}], "]"}]}]}], " ", "*)"}]}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"Generators", "[", "A_", "]"}], " ", ":=", " ", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"Elt", "[", 
+      RowBox[{"A", ",", " ", "#"}], "]"}], " ", "&"}], " ", "/@", " ", 
+    RowBox[{"IdentityMatrix", "[", 
+     RowBox[{"AlgebraDimension", "[", "A", "]"}], "]"}]}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"Elt", " ", "/:", " ", 
+   RowBox[{"CircleTimes", "[", 
+    RowBox[{
+     RowBox[{"Elt", "[", 
+      RowBox[{"A_", ",", " ", "u_"}], "]"}], ",", " ", 
+     RowBox[{"Elt", "[", 
+      RowBox[{"A_", ",", " ", "v_"}], "]"}]}], "]"}], " ", ":=", " ", 
+   RowBox[{"Elt", "[", 
+    RowBox[{"A", ",", " ", 
+     RowBox[{"Expand", "[", 
+      RowBox[{"v", " ", ".", " ", 
+       RowBox[{"(", 
+        RowBox[{"u", " ", ".", " ", 
+         RowBox[{"Mu", "[", "A", "]"}]}], ")"}]}], "]"}]}], "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"Elt", " ", "/:", " ", 
+   RowBox[{"CircleTimes", "[", 
+    RowBox[{"a_Elt", ",", " ", "b_Elt", ",", " ", "c__Elt"}], "]"}], " ", ":=",
+    " ", 
+   RowBox[{"CircleTimes", "[", 
+    RowBox[{
+     RowBox[{"CircleTimes", "[", 
+      RowBox[{"a", ",", " ", "b"}], "]"}], ",", " ", "c"}], "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"Elt", " ", "/:", " ", 
+   RowBox[{"CirclePlus", "[", 
+    RowBox[{
+     RowBox[{"Elt", "[", 
+      RowBox[{"A_", ",", " ", "u_"}], "]"}], ",", " ", 
+     RowBox[{"Elt", "[", 
+      RowBox[{"A_", ",", " ", "v_"}], "]"}]}], "]"}], " ", ":=", " ", 
+   RowBox[{"Elt", "[", 
+    RowBox[{"A", ",", " ", 
+     RowBox[{"u", " ", "+", " ", "v"}]}], "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"Elt", " ", "/:", " ", 
+   RowBox[{"CirclePlus", "[", 
+    RowBox[{"a_Elt", ",", " ", "b_Elt", ",", " ", "c__Elt"}], "]"}], " ", ":=",
+    " ", 
+   RowBox[{"CirclePlus", "[", 
+    RowBox[{
+     RowBox[{"CirclePlus", "[", 
+      RowBox[{"a", ",", " ", "b"}], "]"}], ",", " ", "c"}], "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"Elt", " ", "/:", " ", 
+   RowBox[{
+    RowBox[{"Times", "[", 
+     RowBox[{"c_", ",", " ", 
+      RowBox[{"Elt", "[", 
+       RowBox[{"A_", ",", " ", "u_"}], "]"}]}], "]"}], " ", "/;", " ", 
+    RowBox[{"FreeQ", "[", 
+     RowBox[{"c", ",", " ", 
+      RowBox[{"Elt", " ", "|", " ", "Coch"}]}], "]"}]}], " ", ":=", " ", 
+   RowBox[{"Elt", "[", 
+    RowBox[{"A", ",", " ", 
+     RowBox[{"c", " ", "u"}]}], "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"Elt", " ", "/:", " ", 
+   RowBox[{"Equal", "[", 
+    RowBox[{
+     RowBox[{"Elt", "[", 
+      RowBox[{"A_", ",", " ", "u_"}], "]"}], ",", " ", 
+     RowBox[{"Elt", "[", 
+      RowBox[{"A_", ",", " ", "v_"}], "]"}]}], "]"}], " ", ":=", " ", 
+   RowBox[{"zeroQ", "[", 
+    RowBox[{"u", " ", "-", " ", "v"}], "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"Elt", " ", "/:", " ", 
+   RowBox[{"Equal", "[", 
+    RowBox[{
+     RowBox[{"Elt", "[", 
+      RowBox[{"_", ",", " ", "u_"}], "]"}], ",", " ", "0"}], "]"}], " ", ":=",
+    " ", 
+   RowBox[{"zeroQ", "[", "u", "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"Elt", " ", "/:", " ", 
+    RowBox[{"MakeBoxes", "[", 
+     RowBox[{
+      RowBox[{"Elt", "[", 
+       RowBox[{"A_", ",", " ", "u_"}], "]"}], ",", " ", "fmt_"}], "]"}], " ", 
+    ":=", " ", 
+    RowBox[{"ToBoxes", "[", 
+     RowBox[{
+      RowBox[{"With", "[", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{"t", " ", "=", " ", 
+          RowBox[{"Total", "[", 
+           RowBox[{"MapThread", "[", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"If", "[", 
+               RowBox[{
+                RowBox[{"#2", " ", "==", " ", "\"\<1\>\""}], ",", " ", "#1", ",",
+                 " ", 
+                RowBox[{"#1", " ", 
+                 RowBox[{"Style", "[", 
+                  RowBox[{"#2", ",", " ", "Italic", ",", " ", 
+                   RowBox[{
+                   "ShowStringCharacters", " ", "->", " ", "False"}]}], 
+                  "]"}]}]}], "]"}], " ", "&"}], ",", " ", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"Simplify", "[", "u", "]"}], ",", " ", 
+               RowBox[{"A", "[", "\"\<Basis\>\"", "]"}]}], "}"}]}], "]"}], 
+           "]"}]}], "}"}], ",", " ", "t"}], "]"}], ",", " ", "fmt"}], "]"}]}],
+    ";"}], "\n", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"Hochschild", " ", 
+      RowBox[{"cochains", ":", " ", 
+       RowBox[{"Coch", "[", 
+        RowBox[{"A", ",", " ", 
+         RowBox[{"array", " ", "of", " ", "values"}]}], "]"}]}]}], ";", " ", 
+     RowBox[{
+      RowBox[{"f", "[", 
+       RowBox[{"a", ",", " ", "b"}], "]"}], " ", "evaluates"}]}], ",", " ", 
+    RowBox[{
+     RowBox[{"f", " ", "\[CircleTimes]", " ", "g"}], " ", "is", " ", "the", " ",
+      "cup", " ", "product"}]}], " ", "*)"}]}], "\n", 
+ RowBox[{
+  RowBox[{"Coch", " ", "/:", " ", 
+   RowBox[{"CirclePlus", "[", 
+    RowBox[{
+     RowBox[{"Coch", "[", 
+      RowBox[{"A_", ",", " ", "f_"}], "]"}], ",", " ", 
+     RowBox[{"Coch", "[", 
+      RowBox[{"A_", ",", " ", "g_"}], "]"}]}], "]"}], " ", ":=", " ", 
+   RowBox[{"Coch", "[", 
+    RowBox[{"A", ",", " ", 
+     RowBox[{"f", " ", "+", " ", "g"}]}], "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"Coch", " ", "/:", " ", 
+   RowBox[{"CircleTimes", "[", 
+    RowBox[{
+     RowBox[{"Coch", "[", 
+      RowBox[{"A_", ",", " ", "f_"}], "]"}], ",", " ", 
+     RowBox[{"Coch", "[", 
+      RowBox[{"A_", ",", " ", "g_"}], "]"}]}], "]"}], " ", ":=", " ", 
+   RowBox[{"Coch", "[", 
+    RowBox[{"A", ",", " ", 
+     RowBox[{"Cup", "[", 
+      RowBox[{"A", ",", " ", "f", ",", " ", "g"}], "]"}]}], "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"Coch", " ", "/:", " ", 
+   RowBox[{"CirclePlus", "[", 
+    RowBox[{"a_Coch", ",", " ", "b_Coch", ",", " ", "c__Coch"}], "]"}], " ", ":=",
+    " ", 
+   RowBox[{"CirclePlus", "[", 
+    RowBox[{
+     RowBox[{"CirclePlus", "[", 
+      RowBox[{"a", ",", " ", "b"}], "]"}], ",", " ", "c"}], "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"Coch", " ", "/:", " ", 
+   RowBox[{"CircleTimes", "[", 
+    RowBox[{"a_Coch", ",", " ", "b_Coch", ",", " ", "c__Coch"}], "]"}], " ", ":=",
+    " ", 
+   RowBox[{"CircleTimes", "[", 
+    RowBox[{
+     RowBox[{"CircleTimes", "[", 
+      RowBox[{"a", ",", " ", "b"}], "]"}], ",", " ", "c"}], "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"Coch", " ", "/:", " ", 
+   RowBox[{
+    RowBox[{"Times", "[", 
+     RowBox[{"c_", ",", " ", 
+      RowBox[{"Coch", "[", 
+       RowBox[{"A_", ",", " ", "f_"}], "]"}]}], "]"}], " ", "/;", " ", 
+    RowBox[{"FreeQ", "[", 
+     RowBox[{"c", ",", " ", 
+      RowBox[{"Elt", " ", "|", " ", "Coch"}]}], "]"}]}], " ", ":=", " ", 
+   RowBox[{"Coch", "[", 
+    RowBox[{"A", ",", " ", 
+     RowBox[{"c", " ", "f"}]}], "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"Coch", " ", "/:", " ", 
+   RowBox[{"Equal", "[", 
+    RowBox[{
+     RowBox[{"Coch", "[", 
+      RowBox[{"A_", ",", " ", "f_"}], "]"}], ",", " ", 
+     RowBox[{"Coch", "[", 
+      RowBox[{"A_", ",", " ", "g_"}], "]"}]}], "]"}], " ", ":=", " ", 
+   RowBox[{"zeroQ", "[", 
+    RowBox[{"f", " ", "-", " ", "g"}], "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"Coch", " ", "/:", " ", 
+   RowBox[{"Equal", "[", 
+    RowBox[{
+     RowBox[{"Coch", "[", 
+      RowBox[{"_", ",", " ", "f_"}], "]"}], ",", " ", "0"}], "]"}], " ", ":=",
+    " ", 
+   RowBox[{"zeroQ", "[", "f", "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"Coch", "[", 
+     RowBox[{"A_", ",", " ", "f_"}], "]"}], "[", "a___Elt", "]"}], " ", ":=", 
+   " ", 
+   RowBox[{"Elt", "[", 
+    RowBox[{"A", ",", " ", 
+     RowBox[{"EvaluateCochain", "[", 
+      RowBox[{"f", ",", " ", 
+       RowBox[{
+        RowBox[{"{", "a", "}"}], "[", 
+        RowBox[{"[", 
+         RowBox[{"All", ",", " ", "2"}], "]"}], "]"}]}], "]"}]}], "]"}]}], 
+  ";"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"\[Delta]", "[", 
+    RowBox[{"Coch", "[", 
+     RowBox[{"A_", ",", " ", "f_"}], "]"}], "]"}], " ", ":=", " ", 
+   RowBox[{"Coch", "[", 
+    RowBox[{"A", ",", " ", 
+     RowBox[{"HDelta", "[", 
+      RowBox[{"A", ",", " ", "f"}], "]"}]}], "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"Coch", " ", "/:", " ", 
+   RowBox[{"MakeBoxes", "[", 
+    RowBox[{
+     RowBox[{"Coch", "[", 
+      RowBox[{"A_", ",", " ", "f_"}], "]"}], ",", " ", "fmt_"}], "]"}], " ", ":=",
+    " ", 
+   RowBox[{"ToBoxes", "[", 
+    RowBox[{
+     RowBox[{"Row", "[", 
+      RowBox[{"{", 
+       RowBox[{"\"\<cochain in \>\"", ",", " ", 
+        RowBox[{"Superscript", "[", 
+         RowBox[{"\"\<C\>\"", ",", " ", 
+          RowBox[{"CochainDegree", "[", "f", "]"}]}], "]"}]}], "}"}], "]"}], ",",
+      " ", "fmt"}], "]"}]}], ";"}]}], "Input",ExpressionUUID->"a22476a8-92b9-\
+48c4-bd01-8cdf44517251"],
+
+Cell["How the books write it", "Subsection",ExpressionUUID->"8be0d753-9996-4526-b3e4-0381c582c174"],
+
+Cell["\<\
+A Coch object is a Hochschild cochain. In the books the space of n-cochains \
+of A with values in a bimodule M is\
+\>", "Text",ExpressionUUID->"899f251b-2c5d-4ba5-bf35-f92534f84a2a"],
+
+Cell[BoxData[
+ FormBox[
+  RowBox[{
+   RowBox[{
+    SuperscriptBox["C", "n"], "(", "A", ",", "M", ")"}], "=", 
+   RowBox[{
+    SubscriptBox["Hom", "k"], "(", 
+    SuperscriptBox["A", 
+     RowBox[{"\[CircleTimes]", "n"}]], ",", "M", ")"}]}], 
+  TraditionalForm]], "DisplayFormula",ExpressionUUID->"7a30f245-4fa3-4e25-\
+b557-b28fc85ed58f"],
+
+Cell[TextData[{
+ "the k-linear maps of n arguments ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"f", "(", 
+    SubscriptBox["a", "1"], ",", "\[Ellipsis]", ",", 
+    SubscriptBox["a", "n"], ")"}], TraditionalForm]],ExpressionUUID->
+  "16ca1df6-0776-4d83-89ba-286084fc50cd"],
+ " from A to M. Here M = A, so a Coch is an element of ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SuperscriptBox["C", "n"], "(", "A", ",", "A", ")"}], TraditionalForm]],
+  ExpressionUUID->"2aded89d-f68b-43e1-9f8f-2450b6d1092f"],
+ ". The dictionary:"
+}], "Text",ExpressionUUID->"a03d417c-7876-4ca0-b074-55f339a133af"],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {
+     StyleBox["\<\"In this notebook\"\>",
+      StripOnInput->False,
+      FontWeight->Bold], 
+     StyleBox["\<\"In the books\"\>",
+      StripOnInput->False,
+      FontWeight->Bold]},
+    {
+     InterpretationBox[Cell[BoxData[
+       StyleBox["\<\"Coch[A, f]  (p arguments)\"\>",
+        StripOnInput->False,
+        FontFamily->"Source Code Pro",
+        FontSize->12]],ExpressionUUID->"60b6e6c3-5583-41f4-bbfd-d6e0ee238e74"],
+      TextCell[
+       Style[
+       "Coch[A, f]  (p arguments)", FontFamily -> "Source Code Pro", FontSize -> 
+        12]]], 
+     FormBox[
+      RowBox[{"f", "\[Element]", 
+       RowBox[{
+        SuperscriptBox["C", "p"], "(", "A", ",", "A", ")"}], "=", 
+       RowBox[{
+        SubscriptBox["Hom", "k"], "(", 
+        SuperscriptBox["A", 
+         RowBox[{"\[CircleTimes]", "p"}]], ",", "A", ")"}]}],
+      TraditionalForm]},
+    {
+     InterpretationBox[Cell[
+      "all the cochains together",ExpressionUUID->
+       "50fe82da-fa1f-4823-97eb-2aa93cb3cd53"],
+      TextCell["all the cochains together"]], 
+     TemplateBox[{
+       InterpretationBox[
+        Cell["the Hochschild complex "], 
+        TextCell["the Hochschild complex "]], 
+       FormBox[
+        RowBox[{"(", 
+          RowBox[{
+            SuperscriptBox["C", "\[Bullet]"], "(", "A", ",", "A", ")"}], ",", 
+          "\[Delta]", ")"}], TraditionalForm]},
+      "RowDefault"]},
+    {
+     InterpretationBox[Cell[BoxData[
+       StyleBox["\<\"Coch[A, u]  (no arguments)\"\>",
+        StripOnInput->False,
+        FontFamily->"Source Code Pro",
+        FontSize->12]],ExpressionUUID->"ef2b1ea9-0715-4c81-9d65-e720745225f4"],
+      TextCell[
+       Style[
+       "Coch[A, u]  (no arguments)", FontFamily -> "Source Code Pro", 
+        FontSize -> 12]]], 
+     FormBox[
+      RowBox[{
+       RowBox[{
+        SuperscriptBox["C", "0"], "(", "A", ",", "A", ")"}], "=", "A"}],
+      TraditionalForm]},
+    {
+     InterpretationBox[Cell[BoxData[
+       StyleBox["\<\"\[Delta][f]\"\>",
+        StripOnInput->False,
+        FontFamily->"Source Code Pro",
+        FontSize->12]],ExpressionUUID->"153333cc-fb27-4ea3-82eb-f82fa2b03228"],
+      TextCell[
+       Style[
+       "\[Delta][f]", FontFamily -> "Source Code Pro", FontSize -> 12]]], 
+     TemplateBox[{
+       FormBox[
+        RowBox[{
+          RowBox[{"\[Delta]", "f"}], "\[Element]", 
+          RowBox[{
+            SuperscriptBox["C", 
+             RowBox[{"p", "+", "1"}]], "(", "A", ",", "A", ")"}]}], 
+        TraditionalForm], 
+       InterpretationBox[
+        Cell[", also written d or b"], 
+        TextCell[", also written d or b"]]},
+      "RowDefault"]},
+    {
+     InterpretationBox[Cell[BoxData[
+       StyleBox["\<\"CocycleQ[A, f]\"\>",
+        StripOnInput->False,
+        FontFamily->"Source Code Pro",
+        FontSize->12]],ExpressionUUID->"687c605b-f9d8-4d89-8556-1e3cbde67dbc"],
+      TextCell[
+       Style[
+       "CocycleQ[A, f]", FontFamily -> "Source Code Pro", FontSize -> 12]]], 
+     TemplateBox[{
+       FormBox[
+        RowBox[{"f", "\[Element]", 
+          RowBox[{
+            SuperscriptBox["Z", "p"], "(", "A", ",", "A", ")"}], "=", 
+          RowBox[{"ker", " ", "\[Delta]"}]}], TraditionalForm], 
+       InterpretationBox[
+        Cell[", a cocycle"], 
+        TextCell[", a cocycle"]]},
+      "RowDefault"]},
+    {
+     InterpretationBox[Cell[BoxData[
+       StyleBox["\<\"CoboundaryQ[A, f]\"\>",
+        StripOnInput->False,
+        FontFamily->"Source Code Pro",
+        FontSize->12]],ExpressionUUID->"b0e3dfb7-bacf-4219-87eb-7246f35baa63"],
+      TextCell[
+       Style[
+       "CoboundaryQ[A, f]", FontFamily -> "Source Code Pro", FontSize -> 
+        12]]], 
+     TemplateBox[{
+       FormBox[
+        RowBox[{"f", "\[Element]", 
+          RowBox[{
+            SuperscriptBox["B", "p"], "(", "A", ",", "A", ")"}], "=", 
+          RowBox[{"im", " ", "\[Delta]"}]}], TraditionalForm], 
+       InterpretationBox[
+        Cell[", a coboundary"], 
+        TextCell[", a coboundary"]]},
+      "RowDefault"]},
+    {
+     InterpretationBox[Cell[BoxData[
+       StyleBox["\<\"a class from HHBasis\"\>",
+        StripOnInput->False,
+        FontFamily->"Source Code Pro",
+        FontSize->12]],ExpressionUUID->"ca7844f7-6447-4489-bc22-7c2fc09a7588"],
+      TextCell[
+       Style[
+       "a class from HHBasis", FontFamily -> "Source Code Pro", FontSize -> 
+        12]]], 
+     FormBox[
+      RowBox[{
+       RowBox[{"[", "f", "]"}], "\[Element]", 
+       RowBox[{
+        SuperscriptBox["HH", "p"], "(", "A", ",", "A", ")"}], "=", 
+       RowBox[{
+        SuperscriptBox["Z", "p"], "/", 
+        SuperscriptBox["B", "p"]}]}],
+      TraditionalForm]},
+    {
+     InterpretationBox[Cell[BoxData[
+       StyleBox["\<\"deg[f]\"\>",
+        StripOnInput->False,
+        FontFamily->"Source Code Pro",
+        FontSize->12]],ExpressionUUID->"84fd8d74-8f42-4087-b1b3-bdd28ebdcb31"],
+      TextCell[
+       Style["deg[f]", FontFamily -> "Source Code Pro", FontSize -> 12]]], 
+     FormBox[
+      RowBox[{
+       RowBox[{"\[LeftBracketingBar]", "f", "\[RightBracketingBar]"}], "=", 
+       "p"}],
+      TraditionalForm]},
+    {
+     InterpretationBox[Cell[BoxData[
+       StyleBox["\<\"f[a1, ..., ap]\"\>",
+        StripOnInput->False,
+        FontFamily->"Source Code Pro",
+        FontSize->12]],ExpressionUUID->"d6871587-afd6-4ace-87ed-01d7693dd8ee"],
+      TextCell[
+       Style[
+       "f[a1, ..., ap]", FontFamily -> "Source Code Pro", FontSize -> 12]]], 
+     FormBox[
+      RowBox[{"f", "(", 
+       SubscriptBox["a", "1"], ",", "\[Ellipsis]", ",", 
+       SubscriptBox["a", "p"], ")"}],
+      TraditionalForm]},
+    {
+     InterpretationBox[Cell[BoxData[
+       StyleBox["\<\"f \[CircleTimes] g  (on cochains)\"\>",
+        StripOnInput->False,
+        FontFamily->"Source Code Pro",
+        FontSize->12]],ExpressionUUID->"40bd2f26-9072-45de-8d42-5ad543281ed9"],
+      TextCell[
+       Style[
+       "f \[CircleTimes] g  (on cochains)", FontFamily -> "Source Code Pro", 
+        FontSize -> 12]]], 
+     TemplateBox[{
+       InterpretationBox[
+        Cell["the cup product "], 
+        TextCell["the cup product "]], 
+       FormBox[
+        RowBox[{"f", "\[Cup]", "g"}], TraditionalForm], 
+       InterpretationBox[
+        Cell[", also written "], 
+        TextCell[", also written "]], 
+       FormBox[
+        RowBox[{"f", "\[Union]", "g"}], TraditionalForm], 
+       InterpretationBox[
+        Cell[" or "], 
+        TextCell[" or "]], 
+       FormBox[
+        RowBox[{"f", "\[CenterDot]", "g"}], TraditionalForm]},
+      "RowDefault"]},
+    {
+     InterpretationBox[Cell[BoxData[
+       StyleBox["\<\"f \[SmallCircle] g,  Bracket[f, g]\"\>",
+        StripOnInput->False,
+        FontFamily->"Source Code Pro",
+        FontSize->12]],ExpressionUUID->"9c14f2ae-73d3-4739-8b31-5171b512effd"],
+      TextCell[
+       Style[
+       "f \[SmallCircle] g,  Bracket[f, g]", FontFamily -> "Source Code Pro", 
+        FontSize -> 12]]], 
+     TemplateBox[{
+       InterpretationBox[
+        Cell["Gerstenhaber's "], 
+        TextCell["Gerstenhaber's "]], 
+       FormBox[
+        RowBox[{"f", "\[SmallCircle]", "g"}], TraditionalForm], 
+       InterpretationBox[
+        Cell[" and "], 
+        TextCell[" and "]], 
+       FormBox[
+        RowBox[{"[", "f", ",", "g", "]"}], TraditionalForm]},
+      "RowDefault"]},
+    {
+     InterpretationBox[Cell[BoxData[
+       StyleBox["\<\"CochainForm[A, f]\"\>",
+        StripOnInput->False,
+        FontFamily->"Source Code Pro",
+        FontSize->12]],ExpressionUUID->"88c68f8d-c5fd-475e-8569-7cff4f308c9e"],
+      TextCell[
+       Style[
+       "CochainForm[A, f]", FontFamily -> "Source Code Pro", FontSize -> 
+        12]]], 
+     TemplateBox[{
+       InterpretationBox[
+        Cell["the values "], 
+        TextCell["the values "]], 
+       FormBox[
+        RowBox[{"f", "(", 
+          SubscriptBox["e", 
+           SubscriptBox["i", "1"]], ",", "\[Ellipsis]", ",", 
+          SubscriptBox["e", 
+           SubscriptBox["i", "p"]], ")"}], TraditionalForm], 
+       InterpretationBox[
+        Cell[" on basis elements"], 
+        TextCell[" on basis elements"]]},
+      "RowDefault"]}
+   },
+   AutoDelete->False,
+   GridBoxAlignment->{"Columns" -> {{Left}}},
+   GridBoxBackground->{"Columns" -> {{None}}, "Rows" -> {
+       GrayLevel[0.93]}},
+   GridBoxFrame->{"Columns" -> {{True}}, "Rows" -> {{True}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
+   GridBoxSpacings->{"Columns" -> {{1.2}}, "Rows" -> {{0.8}}}],
+  "Grid"]], "Text",
+ ShowStringCharacters->False,
+ FontFamily->
+  "Source Sans Pro",ExpressionUUID->"f8c73add-ca36-4710-b35d-c0708683e14d"],
+
+Cell["Variants you will meet in other books:", "Text",ExpressionUUID->"25796fb2-c1d0-4087-99bf-e7d1bcbb5ad2"],
+
+Cell[TextData[{
+ "Bar resolution: ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{
+     SuperscriptBox["C", "n"], "(", "A", ",", "M", ")"}], "\[TildeFullEqual]", 
+    RowBox[{
+     SubscriptBox["Hom", 
+      SuperscriptBox["A", "e"]], "(", 
+     SuperscriptBox["A", 
+      RowBox[{"\[CircleTimes]", 
+       RowBox[{"(", 
+        RowBox[{"n", "+", "2"}], ")"}]}]], ",", "M", ")"}]}], 
+   TraditionalForm]],ExpressionUUID->"f0e2476d-bfd6-49d3-9526-0785e3eae5f7"],
+ " with ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SuperscriptBox["A", "e"], "=", 
+    RowBox[{"A", "\[CircleTimes]", 
+     SuperscriptBox["A", "op"]}]}], TraditionalForm]],ExpressionUUID->
+  "15b26e54-1bb8-4556-8969-0afe47b5f92d"],
+ ", which is how ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{
+     SuperscriptBox["HH", "n"], "(", "A", ",", "M", ")"}], "=", 
+    RowBox[{
+     SubsuperscriptBox["Ext", 
+      SuperscriptBox["A", "e"], "n"], "(", "A", ",", "M", ")"}]}], 
+   TraditionalForm]],ExpressionUUID->"39b74bc2-9bf4-4df4-8227-1dcf4c5d972a"],
+ " is usually defined."
+}], "Item",ExpressionUUID->"237fd684-a695-4492-a347-499a8226c795"],
+
+Cell[TextData[{
+ "Normalized cochains ",
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox[
+    OverscriptBox["C", "_"], "n"], TraditionalForm]],ExpressionUUID->
+  "779d8154-602c-479b-8689-1641e8d3a3ed"],
+ ": the cochains that vanish when any argument is 1. They have the same \
+cohomology."
+}], "Item",ExpressionUUID->"511c35ae-903b-4bce-9758-9a3ff876afed"],
+
+Cell[TextData[{
+ "Shifted grading for the bracket: Gerstenhaber puts a p-cochain in degree p \
+- 1, so that ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SuperscriptBox["C", 
+     RowBox[{"\[Bullet]", "+", "1"}]], "(", "A", ",", "A", ")"}], 
+   TraditionalForm]],ExpressionUUID->"151ccbc3-0fdb-49a9-9c15-77d9321f8e2c"],
+ " becomes a graded Lie algebra."
+}], "Item",ExpressionUUID->"b903379f-c160-41a9-8b8f-ccb7b3c3be39"],
+
+Cell[TextData[{
+ "This notebook writes the cup product as ",
+ Cell[BoxData[
+  FormBox["\[CircleTimes]", TraditionalForm]],ExpressionUUID->
+  "37ef68e0-3b65-452a-b708-3a7cf9dd9d91"],
+ " so that one operator covers all multiplication. The books write ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"f", "\[Cup]", "g"}], TraditionalForm]],ExpressionUUID->
+  "930ebc1c-7b52-4d8e-be67-5e133f984948"],
+ "."
+}], "Text",ExpressionUUID->"a93d2523-1e10-488b-b754-d7a32dc08541"],
+
+Cell["2. Expanding, distributing and simplifying", "Section",ExpressionUUID->"dc697ddd-dd9e-4e79-8b36-e2ce14c9a783"],
+
+Cell[TextData[{
+ "BookExpand applies the ring axioms symbolically: it distributes ",
+ Cell[BoxData["\[CircleTimes]"],ExpressionUUID->
+  "5461db67-4e90-442a-8273-a651ca83b68d"],
+ " over ",
+ Cell[BoxData["\[CirclePlus]"],ExpressionUUID->
+  "04257471-96c5-417d-a022-447d1f56769f"],
+ ", flattens nested products and sums, pulls scalars out, collects like terms \
+and simplifies their coefficients. Declare which symbols are algebra \
+elements; every other symbol is a scalar."
+}], "Text",ExpressionUUID->"f6b9b717-bad5-429f-804f-6e3dffc49df3"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"$Elements", " ", "=", " ", 
+   RowBox[{"{", "}"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"DeclareElements", "[", "s__Symbol", "]"}], " ", ":=", " ", 
+   RowBox[{"(", 
+    RowBox[{"$Elements", " ", "=", " ", 
+     RowBox[{"Union", "[", 
+      RowBox[{"$Elements", ",", " ", 
+       RowBox[{"{", "s", "}"}]}], "]"}]}], ")"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"scalarQ", "[", "s_", "]"}], " ", ":=", " ", 
+   RowBox[{
+    RowBox[{"FreeQ", "[", 
+     RowBox[{"s", ",", " ", 
+      RowBox[{
+      "CircleTimes", " ", "|", " ", "CirclePlus", " ", "|", " ", "_Elt", " ", 
+       "|", " ", "_Coch"}]}], "]"}], " ", "&&", " ", 
+    RowBox[{"FreeQ", "[", 
+     RowBox[{"s", ",", " ", 
+      RowBox[{"Alternatives", " ", "@@", " ", "$Elements"}]}], "]"}]}]}], 
+  ";"}], "\n", 
+ RowBox[{
+  RowBox[{"bookRules", " ", "=", " ", 
+   RowBox[{"{", "\n", "  ", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"CirclePlus", "[", 
+       RowBox[{"p___", ",", " ", 
+        RowBox[{"CirclePlus", "[", "r__", "]"}], ",", " ", "s___"}], "]"}], 
+      " ", ":>", " ", 
+      RowBox[{"CirclePlus", "[", 
+       RowBox[{"p", ",", " ", "r", ",", " ", "s"}], "]"}]}], ",", "\n", "  ", 
+     
+     RowBox[{
+      RowBox[{"CircleTimes", "[", 
+       RowBox[{"p___", ",", " ", 
+        RowBox[{"CircleTimes", "[", "r__", "]"}], ",", " ", "s___"}], "]"}], 
+      " ", ":>", " ", 
+      RowBox[{"CircleTimes", "[", 
+       RowBox[{"p", ",", " ", "r", ",", " ", "s"}], "]"}]}], ",", "\n", "  ", 
+     
+     RowBox[{
+      RowBox[{"CircleTimes", "[", 
+       RowBox[{"p___", ",", " ", 
+        RowBox[{"CirclePlus", "[", "r__", "]"}], ",", " ", "s___"}], "]"}], 
+      " ", ":>", " ", 
+      RowBox[{"(", 
+       RowBox[{"CirclePlus", " ", "@@", " ", 
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"CircleTimes", "[", 
+            RowBox[{"p", ",", " ", "#", ",", " ", "s"}], "]"}], " ", "&"}], 
+          " ", "/@", " ", 
+          RowBox[{"{", "r", "}"}]}], ")"}]}], ")"}]}], ",", "\n", "  ", 
+     RowBox[{
+      RowBox[{"CircleTimes", "[", 
+       RowBox[{"p___", ",", " ", 
+        RowBox[{"Times", "[", 
+         RowBox[{
+          RowBox[{"c_", "?", "scalarQ"}], ",", " ", "e_"}], "]"}], ",", " ", 
+        "s___"}], "]"}], " ", ":>", " ", 
+      RowBox[{"c", " ", 
+       RowBox[{"CircleTimes", "[", 
+        RowBox[{"p", ",", " ", "e", ",", " ", "s"}], "]"}]}]}], ",", "\n", 
+     "  ", 
+     RowBox[{
+      RowBox[{"Times", "[", 
+       RowBox[{
+        RowBox[{"c_", "?", "scalarQ"}], ",", " ", 
+        RowBox[{"CirclePlus", "[", "r__", "]"}]}], "]"}], " ", ":>", " ", 
+      RowBox[{"(", 
+       RowBox[{"CirclePlus", " ", "@@", " ", 
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"c", " ", "#"}], " ", "&"}], " ", "/@", " ", 
+          RowBox[{"{", "r", "}"}]}], ")"}]}], ")"}]}], ",", "\n", "  ", 
+     RowBox[{
+      RowBox[{"CirclePlus", "[", "e_", "]"}], " ", ":>", " ", "e"}], ",", " ", 
+     RowBox[{
+      RowBox[{"CircleTimes", "[", "e_", "]"}], " ", ":>", " ", "e"}]}], 
+    "}"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"splitTerm", "[", "t_", "]"}], " ", ":=", " ", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"fs", " ", "=", " ", 
+       RowBox[{"If", "[", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"Head", "[", "t", "]"}], " ", "===", " ", "Times"}], ",", 
+         " ", 
+         RowBox[{"List", " ", "@@", " ", "t"}], ",", " ", 
+         RowBox[{"{", "t", "}"}]}], "]"}]}], "}"}], ",", "\n", "  ", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"Times", " ", "@@", " ", 
+        RowBox[{"Select", "[", 
+         RowBox[{"fs", ",", " ", "scalarQ"}], "]"}]}], ",", " ", 
+       RowBox[{"Times", " ", "@@", " ", 
+        RowBox[{"Select", "[", 
+         RowBox[{"fs", ",", " ", 
+          RowBox[{
+           RowBox[{"!", " ", 
+            RowBox[{"scalarQ", "[", "#", "]"}]}], " ", "&"}]}], "]"}]}]}], 
+      "}"}]}], "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"collectTerms", "[", "e_", "]"}], " ", ":=", " ", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"ts", " ", "=", " ", 
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"Head", "[", "e", "]"}], " ", "===", " ", "CirclePlus"}], ",",
+           " ", 
+          RowBox[{"List", " ", "@@", " ", "e"}], ",", " ", 
+          RowBox[{"{", "e", "}"}]}], "]"}]}], ",", " ", "g"}], "}"}], ",", 
+     "\n", "  ", 
+     RowBox[{
+      RowBox[{"g", " ", "=", " ", 
+       RowBox[{"Select", "[", 
+        RowBox[{
+         RowBox[{"Normal", "@", 
+          RowBox[{"GroupBy", "[", 
+           RowBox[{
+            RowBox[{"splitTerm", " ", "/@", " ", "ts"}], ",", " ", 
+            RowBox[{"Last", " ", "->", " ", "First"}], ",", " ", 
+            RowBox[{"Simplify", "@*", "Total"}]}], "]"}]}], ",", " ", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"#", "[", 
+            RowBox[{"[", "2", "]"}], "]"}], " ", "=!=", " ", "0"}], " ", 
+          "&"}]}], "]"}]}], ";", "\n", "  ", 
+      RowBox[{"Which", "[", 
+       RowBox[{
+        RowBox[{"g", " ", "===", " ", 
+         RowBox[{"{", "}"}]}], ",", " ", "0", ",", " ", 
+        RowBox[{
+         RowBox[{"Length", "[", "g", "]"}], " ", "==", " ", "1"}], ",", " ", 
+        RowBox[{
+         RowBox[{"g", "[", 
+          RowBox[{"[", 
+           RowBox[{"1", ",", " ", "2"}], "]"}], "]"}], " ", 
+         RowBox[{"g", "[", 
+          RowBox[{"[", 
+           RowBox[{"1", ",", " ", "1"}], "]"}], "]"}]}], ",", " ", "True", ",",
+         " ", 
+        RowBox[{"CirclePlus", " ", "@@", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{
+            RowBox[{
+             RowBox[{"#", "[", 
+              RowBox[{"[", "2", "]"}], "]"}], " ", 
+             RowBox[{"#", "[", 
+              RowBox[{"[", "1", "]"}], "]"}]}], " ", "&"}], " ", "/@", " ", 
+           RowBox[{"SortBy", "[", 
+            RowBox[{"g", ",", " ", "First"}], "]"}]}], ")"}]}]}], "]"}]}]}], 
+    "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"BookExpand", "[", "e_", "]"}], " ", ":=", " ", 
+   RowBox[{"collectTerms", "[", 
+    RowBox[{"FixedPoint", "[", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"ReplaceRepeated", "[", 
+        RowBox[{"#", ",", " ", "bookRules"}], "]"}], " ", "&"}], ",", " ", 
+      "e"}], "]"}], "]"}]}], ";"}]}], "Input",ExpressionUUID->"acaa9f81-3db5-\
+4ed1-897f-d1cf1634a1a9"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"DeclareElements", "[", 
+   RowBox[{"a", ",", " ", "b", ",", " ", "c"}], "]"}], ";"}], "\n", 
+ RowBox[{"BookExpand", "[", 
+  RowBox[{
+   RowBox[{"(", 
+    RowBox[{"a", " ", "\[CirclePlus]", " ", "b"}], ")"}], " ", "\[CircleTimes]",
+    " ", 
+   RowBox[{"(", 
+    RowBox[{"a", " ", "\[CirclePlus]", " ", "b"}], ")"}]}], "]"}]}], "Input",E\
+xpressionUUID->"ab396f60-3160-48c6-9629-f3f1f9da4663"],
+
+Cell[BoxData[
+ RowBox[{"BookExpand", "[", 
+  RowBox[{
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{"2", " ", "a"}], " ", "\[CirclePlus]", " ", 
+     RowBox[{"-", "b"}]}], ")"}], " ", "\[CircleTimes]", " ", 
+   RowBox[{"(", 
+    RowBox[{"a", " ", "\[CirclePlus]", " ", 
+     RowBox[{"3", " ", "b"}]}], ")"}]}], "]"}]], "Input",ExpressionUUID->\
+"5d91617a-059b-43a4-91db-f6d6f36140f1"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"BookExpand", "[", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{"a", " ", "\[CirclePlus]", " ", "b"}], ")"}], " ", "\[CircleTimes]",
+      " ", "c"}], " ", "\[CirclePlus]", " ", 
+    RowBox[{"-", 
+     RowBox[{"(", 
+      RowBox[{"a", " ", "\[CircleTimes]", " ", "c"}], ")"}]}]}], "]"}], 
+  "          ", 
+  RowBox[{"(*", " ", 
+   RowBox[{"the", " ", 
+    RowBox[{"a", " ", "\[CircleTimes]", " ", "c"}], " ", "terms", " ", 
+    "cancel"}], " ", "*)"}]}]], "Input",ExpressionUUID->"7ca83ef3-ee6f-4f07-\
+9214-00338c94f6fe"],
+
+Cell[BoxData[
+ RowBox[{"BookExpand", "[", 
+  RowBox[{
+   RowBox[{"q", " ", 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{"a", " ", "\[CirclePlus]", " ", "b"}], ")"}], " ", "\[CircleTimes]",
+      " ", 
+     RowBox[{"(", 
+      RowBox[{"a", " ", "\[CirclePlus]", " ", 
+       RowBox[{"-", "b"}]}], ")"}]}]}], " ", "\[CirclePlus]", " ", 
+   RowBox[{"q", " ", 
+    RowBox[{"b", " ", "\[CircleTimes]", " ", "b"}]}]}], "]"}]], "Input",Expres\
+sionUUID->"e151db18-ed40-4c23-80a2-88c62b092963"],
+
+Cell[BoxData[
+ RowBox[{"BookExpand", "[", 
+  RowBox[{
+   RowBox[{"(", 
+    RowBox[{"a", " ", "\[CirclePlus]", " ", "b"}], ")"}], " ", "\[CircleTimes]",
+    " ", 
+   RowBox[{"(", 
+    RowBox[{"b", " ", "\[CirclePlus]", " ", "c"}], ")"}], " ", "\[CircleTimes]",
+    " ", "a"}], "]"}]], "Input",ExpressionUUID->"33a5284c-a66a-4b7e-b468-\
+3c7694d47283"],
+
+Cell["3. Elements of an algebra", "Section",ExpressionUUID->"abc3e467-0a23-464c-9b2f-e9ba9d280db3"],
+
+Cell[TextData[{
+ "Dual numbers ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"k", "[", "x", "]", "/", "(", 
+    SuperscriptBox["x", "2"], ")"}], TraditionalForm]],ExpressionUUID->
+  "481211f5-2c23-40de-be9b-ba4249a6967d"],
+ ": ",
+ Cell[BoxData[
+  FormBox[
+   FormBox[
+    TagBox[
+     RowBox[{
+      RowBox[{"x", "\[CircleTimes]", "x"}], "\[LongEqual]", "0"}],
+     HoldForm],
+    TraditionalForm], TraditionalForm]],ExpressionUUID->
+  "5cc57ed9-3006-4b3d-9674-013484839680"],
+ " and ",
+ Cell[BoxData[
+  FormBox[
+   FormBox[
+    TagBox[
+     RowBox[{
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"1", "\[CirclePlus]", "x"}], ")"}], "\[CircleTimes]", 
+       RowBox[{"(", 
+        RowBox[{"1", "\[CirclePlus]", 
+         RowBox[{"-", "x"}]}], ")"}]}], "\[LongEqual]", "1"}],
+     HoldForm],
+    TraditionalForm], TraditionalForm]],ExpressionUUID->
+  "7f8aa1e5-6c36-4a84-8579-c043cd4dc05d"],
+ "."
+}], "Text",ExpressionUUID->"669ff063-1232-46fc-9b58-87cec7b27a9d"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"A", " ", "=", " ", 
+   RowBox[{"DualNumbers", "[", "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"one", ",", " ", "x"}], "}"}], " ", "=", " ", 
+   RowBox[{"Generators", "[", "A", "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"x", " ", "\[CircleTimes]", " ", "x"}], " ", "==", " ", 
+  "0"}]}], "Input",ExpressionUUID->"f2bfbef5-6b27-4b41-8060-cbf849e16b59"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(", 
+   RowBox[{"one", " ", "\[CirclePlus]", " ", "x"}], ")"}], " ", "\[CircleTimes]",
+   " ", 
+  RowBox[{"(", 
+   RowBox[{"one", " ", "\[CirclePlus]", " ", 
+    RowBox[{"-", "x"}]}], ")"}], "          ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{"1", " ", "+", " ", "x"}], ")"}], 
+     RowBox[{"(", 
+      RowBox[{"1", " ", "-", " ", "x"}], ")"}]}], " ", "=", " ", 
+    RowBox[{
+     RowBox[{"1", " ", "-", " ", 
+      RowBox[{"x", "^", "2"}]}], " ", "=", " ", "1"}]}], " ", 
+   "*)"}]}]], "Input",ExpressionUUID->"4537deef-729c-4d4b-a014-1c5152ad9b80"],
+
+Cell[TextData[{
+ "The quantum plane ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+   "k", "\[LeftAngleBracket]", "x", ",", "y", "\[RightAngleBracket]", "/", "(", 
+    SuperscriptBox["x", "2"], ",", 
+    SuperscriptBox["y", "2"], ",", 
+    RowBox[{"y", "x", "-", "q", "x", "y"}], ")"}], TraditionalForm]],
+  ExpressionUUID->"15395d58-d318-4588-855d-2ab2bc32dd65"],
+ " with a symbolic parameter q:"
+}], "Text",ExpressionUUID->"edc3c890-ed0f-4bec-a024-55d1df0cdbcc"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"A", " ", "=", " ", 
+   RowBox[{"QuantumPlane", "[", "q", "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"one", ",", " ", "x", ",", " ", "y", ",", " ", "xy"}], "}"}], " ",
+    "=", " ", 
+   RowBox[{"Generators", "[", "A", "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"y", " ", "\[CircleTimes]", " ", "x"}], " ", "==", " ", 
+  RowBox[{"q", " ", 
+   RowBox[{"(", 
+    RowBox[{"x", " ", "\[CircleTimes]", " ", "y"}], ")"}]}]}]}], "Input",Expre\
+ssionUUID->"440da23f-89b7-4bc4-b802-4371ef8a128b"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(", 
+   RowBox[{"x", " ", "\[CirclePlus]", " ", "y"}], ")"}], " ", "\[CircleTimes]",
+   " ", 
+  RowBox[{"(", 
+   RowBox[{"x", " ", "\[CirclePlus]", " ", "y"}], ")"}]}]], "Input",Expression\
+UUID->"a207e983-b2cb-4118-b1b9-f9c69ef465db"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"BookExpand", "[", 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{"a", " ", "\[CirclePlus]", " ", "b"}], ")"}], " ", "\[CircleTimes]",
+     " ", 
+    RowBox[{"(", 
+     RowBox[{"a", " ", "\[CirclePlus]", " ", "b"}], ")"}]}], "]"}], " ", "/.",
+   " ", 
+  RowBox[{"{", 
+   RowBox[{
+    RowBox[{"a", " ", "->", " ", "x"}], ",", " ", 
+    RowBox[{"b", " ", "->", " ", "y"}]}], "}"}]}]], "Input",ExpressionUUID->\
+"3e76f72c-cc9e-4ce0-8020-4048d5f9c9f8"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"(", 
+    RowBox[{"x", " ", "\[CirclePlus]", " ", "y"}], ")"}], " ", "\[CircleTimes]",
+    " ", 
+   RowBox[{"(", 
+    RowBox[{"x", " ", "\[CirclePlus]", " ", "y"}], ")"}]}], " ", "/.", " ", 
+  RowBox[{"q", " ", "->", " ", 
+   RowBox[{"-", "1", "      ", 
+    RowBox[{"(*", " ", 
+     RowBox[{
+      RowBox[{"exterior", " ", 
+       RowBox[{"algebra", ":", " ", 
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{"x", " ", "+", " ", "y"}], ")"}], "^", "2"}]}]}], " ", "=", 
+      " ", "0"}], " ", "*)"}]}]}]}]], "Input",ExpressionUUID->"60750346-6a4c-\
+4c82-8689-0aea6dc69cca"],
+
+Cell["The ring axioms, checked on every triple of basis elements:", "Text",ExpressionUUID->"c215eec7-8d3e-4792-80ff-e3bbd5f3caf5"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"gens", " ", "=", " ", 
+   RowBox[{"Generators", "[", "A", "]"}]}], ";"}], "\n", 
+ RowBox[{"And", " ", "@@", " ", 
+  RowBox[{"Flatten", "@", 
+   RowBox[{"Table", "[", 
+    RowBox[{
+     RowBox[{
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"a", " ", "\[CircleTimes]", " ", "b"}], ")"}], " ", "\[CircleTimes]",
+        " ", "c"}], " ", "==", " ", 
+      RowBox[{"a", " ", "\[CircleTimes]", " ", 
+       RowBox[{"(", 
+        RowBox[{"b", " ", "\[CircleTimes]", " ", "c"}], ")"}]}]}], ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"a", ",", " ", "gens"}], "}"}], ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"b", ",", " ", "gens"}], "}"}], ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"c", ",", " ", "gens"}], "}"}]}], "]"}]}]}]}], "Input",Expressio\
+nUUID->"39d47883-8e52-4403-8c1f-a8f64c5eee9a"],
+
+Cell[BoxData[
+ RowBox[{"And", " ", "@@", " ", 
+  RowBox[{"Flatten", "@", 
+   RowBox[{"Table", "[", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"a", " ", "\[CircleTimes]", " ", 
+       RowBox[{"(", 
+        RowBox[{"b", " ", "\[CirclePlus]", " ", "c"}], ")"}]}], " ", "==", 
+      " ", 
+      RowBox[{
+       RowBox[{"a", " ", "\[CircleTimes]", " ", "b"}], " ", "\[CirclePlus]", 
+       " ", 
+       RowBox[{"a", " ", "\[CircleTimes]", " ", "c"}]}]}], ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"a", ",", " ", "gens"}], "}"}], ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"b", ",", " ", "gens"}], "}"}], ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"c", ",", " ", "gens"}], "}"}]}], "]"}]}]}]], "Input",Expression\
+UUID->"3fd1b449-450c-4ee7-9fed-9aaffa997560"],
+
+Cell[BoxData[
+ RowBox[{"And", " ", "@@", " ", 
+  RowBox[{"Table", "[", 
+   RowBox[{
+    RowBox[{
+     RowBox[{
+      RowBox[{"one", " ", "\[CircleTimes]", " ", "a"}], " ", "==", " ", "a"}],
+      " ", "&&", " ", 
+     RowBox[{
+      RowBox[{"a", " ", "\[CircleTimes]", " ", "one"}], " ", "==", " ", 
+      "a"}]}], ",", " ", 
+    RowBox[{"{", 
+     RowBox[{"a", ",", " ", "gens"}], "}"}]}], "]"}]}]], "Input",ExpressionUUI\
+D->"adc708c9-fb4e-446a-b696-4c61f872d7e9"],
+
+Cell["4. Cochains and the Hochschild differential", "Section",ExpressionUUID->"ea3b025e-8a50-4798-b9f4-45d8afc2a4ea"],
+
+Cell[TextData[{
+ "On ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"k", "[", "x", "]", "/", "(", 
+    SuperscriptBox["x", "3"], ")"}], TraditionalForm]],ExpressionUUID->
+  "19eb5d3e-9571-49eb-adee-e76c2500fe5b"],
+ " a 1-cocycle is a derivation, ",
+ Cell[BoxData[
+  FormBox[
+   FormBox[
+    TagBox[
+     RowBox[{
+      RowBox[{"\[ScriptCapitalD]", "(", 
+       RowBox[{"a", "\[CircleTimes]", "b"}], ")"}], "\[LongEqual]", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"\[ScriptCapitalD]", "(", "a", ")"}], "\[CircleTimes]", "b"}],
+        "\[CirclePlus]", 
+       RowBox[{"a", "\[CircleTimes]", 
+        RowBox[{"\[ScriptCapitalD]", "(", "b", ")"}]}]}]}],
+     HoldForm],
+    TraditionalForm], TraditionalForm]],ExpressionUUID->
+  "5209410c-d203-4c76-ad8a-456bb74bbd73"],
+ ":"
+}], "Text",ExpressionUUID->"32d185f4-3f4b-4dab-b473-529b4cd0a754"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"B", " ", "=", " ", 
+   RowBox[{"TruncatedPolynomial", "[", "3", "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"one", ",", " ", "x", ",", " ", "x2"}], "}"}], " ", "=", " ", 
+   RowBox[{"gens", " ", "=", " ", 
+    RowBox[{"Generators", "[", "B", "]"}]}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"der", " ", "=", " ", 
+   RowBox[{"Coch", "[", 
+    RowBox[{"B", ",", " ", 
+     RowBox[{"First", "@", 
+      RowBox[{"HHBasis", "[", 
+       RowBox[{"B", ",", " ", "1"}], "]"}]}]}], "]"}]}], ";"}], "\n", 
+ RowBox[{"der", "[", "x", "]"}]}], "Input",ExpressionUUID->"0b66a16c-e949-\
+419f-aba1-6493c54b1ae1"],
+
+Cell[BoxData[
+ RowBox[{"And", " ", "@@", " ", 
+  RowBox[{"Flatten", "@", 
+   RowBox[{"Table", "[", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"der", "[", 
+       RowBox[{"a", " ", "\[CircleTimes]", " ", "b"}], "]"}], " ", "==", " ", 
+      
+      RowBox[{
+       RowBox[{
+        RowBox[{"der", "[", "a", "]"}], " ", "\[CircleTimes]", " ", "b"}], 
+       " ", "\[CirclePlus]", " ", 
+       RowBox[{"a", " ", "\[CircleTimes]", " ", 
+        RowBox[{"der", "[", "b", "]"}]}]}]}], ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"a", ",", " ", "gens"}], "}"}], ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"b", ",", " ", "gens"}], "}"}]}], "]"}]}]}]], "Input",Expression\
+UUID->"36b6d52c-73b0-4446-9bbf-15da24e905e7"],
+
+Cell["\<\
+The differential of a 2-cochain, exactly as written in the books:\
+\>", "Text",ExpressionUUID->"5b1a832c-dfd4-4fa4-9677-4d6417523218"],
+
+Cell[BoxData[
+ FormBox[
+  FormBox[
+   TagBox[
+    RowBox[{
+     RowBox[{
+      RowBox[{"\[Delta]", "(", "\[Phi]", ")"}], "\[InvisibleApplication]", 
+      RowBox[{"(", 
+       RowBox[{"a", ",", "b", ",", "c"}], ")"}]}], "\[LongEqual]", 
+     RowBox[{
+      RowBox[{"a", "\[CircleTimes]", 
+       RowBox[{"\[Phi]", "(", 
+        RowBox[{"b", ",", "c"}], ")"}]}], "\[CirclePlus]", 
+      RowBox[{"-", 
+       RowBox[{"\[Phi]", "(", 
+        RowBox[{
+         RowBox[{"a", "\[CircleTimes]", "b"}], ",", "c"}], ")"}]}], "\[CirclePlus]", 
+      RowBox[{"\[Phi]", "(", 
+       RowBox[{"a", ",", 
+        RowBox[{"b", "\[CircleTimes]", "c"}]}], ")"}], "\[CirclePlus]", 
+      RowBox[{"-", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"\[Phi]", "(", 
+          RowBox[{"a", ",", "b"}], ")"}], "\[CircleTimes]", "c"}], ")"}]}]}]}],
+    HoldForm],
+   TraditionalForm], TraditionalForm]], "DisplayFormula",ExpressionUUID->\
+"38f74643-373f-413f-bd6c-c881d7af2780"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"SeedRandom", "[", "1", "]"}], ";", " ", 
+  RowBox[{"\[Phi]", " ", "=", " ", 
+   RowBox[{"Coch", "[", 
+    RowBox[{"B", ",", " ", 
+     RowBox[{"RandomCochain", "[", 
+      RowBox[{"B", ",", " ", "2"}], "]"}]}], "]"}]}], ";"}], "\n", 
+ RowBox[{"And", " ", "@@", " ", 
+  RowBox[{"Flatten", "@", 
+   RowBox[{"Table", "[", 
+    RowBox[{
+     RowBox[{
+      RowBox[{
+       RowBox[{"\[Delta]", "[", "\[Phi]", "]"}], "[", 
+       RowBox[{"a", ",", " ", "b", ",", " ", "c"}], "]"}], " ", "==", " ", 
+      RowBox[{
+       RowBox[{"a", " ", "\[CircleTimes]", " ", 
+        RowBox[{"\[Phi]", "[", 
+         RowBox[{"b", ",", " ", "c"}], "]"}]}], " ", "\[CirclePlus]", " ", 
+       RowBox[{"-", 
+        RowBox[{"\[Phi]", "[", 
+         RowBox[{
+          RowBox[{"a", " ", "\[CircleTimes]", " ", "b"}], ",", " ", "c"}], 
+         "]"}]}], " ", "\[CirclePlus]", " ", 
+       RowBox[{"\[Phi]", "[", 
+        RowBox[{"a", ",", " ", 
+         RowBox[{"b", " ", "\[CircleTimes]", " ", "c"}]}], "]"}], " ", "\[CirclePlus]",
+        " ", 
+       RowBox[{"-", 
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{"\[Phi]", "[", 
+           RowBox[{"a", ",", " ", "b"}], "]"}], " ", "\[CircleTimes]", " ", 
+          "c"}], ")"}]}]}]}], ",", "\n", "  ", 
+     RowBox[{"{", 
+      RowBox[{"a", ",", " ", "gens"}], "}"}], ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"b", ",", " ", "gens"}], "}"}], ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"c", ",", " ", "gens"}], "}"}]}], "]"}]}]}]}], "Input",Expressio\
+nUUID->"43d17e34-c315-4fb6-aa68-ff7aca7cfe80"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"\[Delta]", "[", 
+   RowBox[{"\[Delta]", "[", "\[Phi]", "]"}], "]"}], " ", "==", " ", 
+  "0"}]], "Input",ExpressionUUID->"44757bed-9f71-4918-9a23-af990da7732f"],
+
+Cell[TextData[{
+ "The cup product ",
+ Cell[BoxData[
+  FormBox[
+   FormBox[
+    TagBox[
+     RowBox[{"f", "\[CircleTimes]", "g"}],
+     HoldForm],
+    TraditionalForm], TraditionalForm]],ExpressionUUID->
+  "b931263a-8452-47cf-8372-bbfe51a28c2e"],
+ " evaluates as ",
+ Cell[BoxData[
+  FormBox[
+   FormBox[
+    TagBox[
+     RowBox[{
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"f", "\[CircleTimes]", "g"}], ")"}], "\[InvisibleApplication]", 
+       RowBox[{"(", 
+        RowBox[{"a", ",", "b", ",", "c"}], ")"}]}], "\[LongEqual]", 
+      RowBox[{
+       RowBox[{"f", "(", "a", ")"}], "\[CircleTimes]", 
+       RowBox[{"g", "(", 
+        RowBox[{"b", ",", "c"}], ")"}]}]}],
+     HoldForm],
+    TraditionalForm], TraditionalForm]],ExpressionUUID->
+  "376467c2-ead6-4086-841a-537409e8b55a"],
+ ", and \[Delta] is a graded derivation of it:"
+}], "Text",ExpressionUUID->"4f182453-ab0f-4c5f-aca5-aad1d0e6f02b"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"f", " ", "=", " ", 
+   RowBox[{"Coch", "[", 
+    RowBox[{"B", ",", " ", 
+     RowBox[{"RandomCochain", "[", 
+      RowBox[{"B", ",", " ", "1"}], "]"}]}], "]"}]}], ";", " ", 
+  RowBox[{"g", " ", "=", " ", 
+   RowBox[{"Coch", "[", 
+    RowBox[{"B", ",", " ", 
+     RowBox[{"RandomCochain", "[", 
+      RowBox[{"B", ",", " ", "2"}], "]"}]}], "]"}]}], ";"}], "\n", 
+ RowBox[{"And", " ", "@@", " ", 
+  RowBox[{"Flatten", "@", 
+   RowBox[{"Table", "[", 
+    RowBox[{
+     RowBox[{
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"f", " ", "\[CircleTimes]", " ", "g"}], ")"}], "[", 
+       RowBox[{"a", ",", " ", "b", ",", " ", "c"}], "]"}], " ", "==", " ", 
+      RowBox[{
+       RowBox[{"f", "[", "a", "]"}], " ", "\[CircleTimes]", " ", 
+       RowBox[{"g", "[", 
+        RowBox[{"b", ",", " ", "c"}], "]"}]}]}], ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"a", ",", " ", "gens"}], "}"}], ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"b", ",", " ", "gens"}], "}"}], ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"c", ",", " ", "gens"}], "}"}]}], "]"}]}]}]}], "Input",Expressio\
+nUUID->"a2361ec0-610d-41cb-97b7-2821905d6c26"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"\[Delta]", "[", 
+   RowBox[{"f", " ", "\[CircleTimes]", " ", "g"}], "]"}], " ", "==", " ", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"\[Delta]", "[", "f", "]"}], " ", "\[CircleTimes]", " ", "g"}], 
+   " ", "\[CirclePlus]", " ", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{"-", "1"}], ")"}], "^", "1"}], " ", 
+    RowBox[{"f", " ", "\[CircleTimes]", " ", 
+     RowBox[{"\[Delta]", "[", "g", "]"}]}]}]}]}]], "Input",ExpressionUUID->\
+"70cbb1bc-254b-4755-a37a-c23fb8e50fc0"],
+
+Cell["5. Deformations in book notation", "Section",ExpressionUUID->"3e3f83e9-9b85-4b9b-8e84-cabed7e2f038"],
+
+Cell[TextData[{
+ "The class in ",
+ Cell[BoxData[
+  FormBox[
+   FormBox[
+    TagBox[
+     TemplateBox[{"HH", "2"},
+      "Superscript"],
+     HoldForm],
+    TraditionalForm], TraditionalForm]],ExpressionUUID->
+  "d3509971-cbee-4367-ac74-f606c7032dcc"],
+ " of the dual numbers deforms the product to ",
+ Cell[BoxData[
+  FormBox[
+   FormBox[
+    TagBox[
+     RowBox[{
+      RowBox[{"x", "\[CircleTimes]", "x"}], "\[LongEqual]", 
+      RowBox[{"-", "t"}]}],
+     HoldForm],
+    TraditionalForm], TraditionalForm]],ExpressionUUID->
+  "5701f7f2-8ca3-4b43-9c13-7ead0034936e"],
+ ", which stays associative for every t:"
+}], "Text",ExpressionUUID->"b2e04c03-374f-4f06-b0a9-a23ed66cd2a7"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"D0", " ", "=", " ", 
+   RowBox[{"DualNumbers", "[", "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"At", " ", "=", " ", 
+   RowBox[{"HochschildAlgebra", "[", 
+    RowBox[{"\"\<k[x]/(x^2 + t)\>\"", ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"\"\<1\>\"", ",", " ", "\"\<x\>\""}], "}"}], ",", " ", 
+     RowBox[{"DeformedStructureConstants", "[", 
+      RowBox[{"D0", ",", " ", 
+       RowBox[{"{", 
+        RowBox[{"First", "@", 
+         RowBox[{"HHBasis", "[", 
+          RowBox[{"D0", ",", " ", "2"}], "]"}]}], "}"}], ",", " ", "t"}], 
+      "]"}]}], "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"one", ",", " ", "x"}], "}"}], " ", "=", " ", 
+   RowBox[{"gens", " ", "=", " ", 
+    RowBox[{"Generators", "[", "At", "]"}]}]}], ";"}], "\n", 
+ RowBox[{"x", " ", "\[CircleTimes]", " ", "x"}]}], "Input",ExpressionUUID->\
+"03ef1b87-dc3c-47e3-b1fa-166439d03cfe"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(", 
+   RowBox[{"one", " ", "\[CirclePlus]", " ", "x"}], ")"}], " ", "\[CircleTimes]",
+   " ", 
+  RowBox[{"(", 
+   RowBox[{"one", " ", "\[CirclePlus]", " ", 
+    RowBox[{"-", "x"}]}], ")"}]}]], "Input",ExpressionUUID->"95479411-95a8-\
+48cc-a663-bc3754d7828c"],
+
+Cell[BoxData[
+ RowBox[{"And", " ", "@@", " ", 
+  RowBox[{"Flatten", "@", 
+   RowBox[{"Table", "[", 
+    RowBox[{
+     RowBox[{
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"a", " ", "\[CircleTimes]", " ", "b"}], ")"}], " ", "\[CircleTimes]",
+        " ", "c"}], " ", "==", " ", 
+      RowBox[{"a", " ", "\[CircleTimes]", " ", 
+       RowBox[{"(", 
+        RowBox[{"b", " ", "\[CircleTimes]", " ", "c"}], ")"}]}]}], ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"a", ",", " ", "gens"}], "}"}], ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"b", ",", " ", "gens"}], "}"}], ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"c", ",", " ", "gens"}], "}"}]}], "]"}]}]}]], "Input",Expression\
+UUID->"d0bf4881-9cf1-460a-a169-22d192bf6bb8"],
+
+Cell["\<\
+The quantum plane at q = 1 - t: the commutator measures the first-order term.\
+\
+\>", "Text",ExpressionUUID->"38b32f1c-93b2-4685-8aec-a95eb7273766"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"Qt", " ", "=", " ", 
+   RowBox[{"QuantumPlane", "[", 
+    RowBox[{"1", " ", "-", " ", "t"}], "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"one", ",", " ", "x", ",", " ", "y", ",", " ", "xy"}], "}"}], " ",
+    "=", " ", 
+   RowBox[{"Generators", "[", "Qt", "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"y", " ", "\[CircleTimes]", " ", "x"}], " ", "\[CirclePlus]", " ", 
+  RowBox[{"-", 
+   RowBox[{"(", 
+    RowBox[{"x", " ", "\[CircleTimes]", " ", "y"}], ")"}]}]}]}], "Input",Expre\
+ssionUUID->"c3fe97ad-625f-405b-8ac6-5e9d0341d420"],
+
+Cell["6. The Jacobi identity for the Gerstenhaber bracket", "Section",ExpressionUUID->"48f618bc-ed96-45c7-ab23-dc8b0cad793d"],
+
+Cell[TextData[{
+ "The composition ",
+ Cell[BoxData[
+  FormBox[
+   FormBox[
+    TagBox[
+     RowBox[{"f", "\[SmallCircle]", "g"}],
+     HoldForm],
+    TraditionalForm], TraditionalForm]],ExpressionUUID->
+  "3fb61845-bed4-4d79-8cb7-faaef5d2a049"],
+ " (Esc sc Esc) inserts g into f with the Koszul signs, and the Gerstenhaber \
+bracket is written exactly as in the books, with |f| = p, |g| = q:"
+}], "Text",ExpressionUUID->"fdc38b1c-77e5-4b5f-b9ba-3de54bc94584"],
+
+Cell[BoxData[
+ FormBox[
+  RowBox[{
+   RowBox[{"[", "f", ",", "g", "]"}], "=", 
+   RowBox[{"f", "\[SmallCircle]", "g"}], "\[CirclePlus]", 
+   RowBox[{"-", 
+    SuperscriptBox[
+     RowBox[{"(", 
+      RowBox[{"-", "1"}], ")"}], 
+     RowBox[{"(", "p", "-", "1", ")", "(", "q", "-", "1", ")"}]]}], 
+   RowBox[{"g", "\[SmallCircle]", "f"}]}], TraditionalForm]], "DisplayFormula",\
+ExpressionUUID->"15864340-3d58-448b-876a-f6e176672ad7"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"deg", "[", 
+    RowBox[{"Coch", "[", 
+     RowBox[{"_", ",", " ", "f_"}], "]"}], "]"}], " ", ":=", " ", 
+   RowBox[{"CochainDegree", "[", "f", "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"Coch", " ", "/:", " ", 
+   RowBox[{"SmallCircle", "[", 
+    RowBox[{
+     RowBox[{"Coch", "[", 
+      RowBox[{"A_", ",", " ", "f_"}], "]"}], ",", " ", 
+     RowBox[{"Coch", "[", 
+      RowBox[{"A_", ",", " ", "g_"}], "]"}]}], "]"}], " ", ":=", " ", 
+   RowBox[{"Coch", "[", 
+    RowBox[{"A", ",", " ", 
+     RowBox[{"GCircle", "[", 
+      RowBox[{"f", ",", " ", "g"}], "]"}]}], "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"Bracket", "[", 
+    RowBox[{"f_Coch", ",", " ", "g_Coch"}], "]"}], " ", ":=", " ", 
+   RowBox[{
+    RowBox[{"f", " ", "\[SmallCircle]", " ", "g"}], " ", "\[CirclePlus]", " ", 
+    RowBox[{
+     RowBox[{"-", 
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"-", "1"}], ")"}], "^", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"deg", "[", "f", "]"}], " ", "-", " ", "1"}], ")"}], " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"deg", "[", "g", "]"}], " ", "-", " ", "1"}], ")"}]}], 
+        ")"}]}]}], " ", 
+     RowBox[{"(", 
+      RowBox[{"g", " ", "\[SmallCircle]", " ", "f"}], ")"}]}]}]}], 
+  ";"}]}], "Input",ExpressionUUID->"162c4de8-9c09-48c2-a130-9f3ab362a7cb"],
+
+Cell["The graded Jacobi identity, for f, g, h of degrees p, q, r:", "Text",ExpressionUUID->"afd4493f-57f7-44a8-8b78-6c21353647d4"],
+
+Cell[BoxData[
+ FormBox[
+  RowBox[{
+   SuperscriptBox[
+    RowBox[{"(", 
+     RowBox[{"-", "1"}], ")"}], 
+    RowBox[{"(", "p", "-", "1", ")", "(", "r", "-", "1", ")"}]], 
+   RowBox[{"[", "f", ",", 
+    RowBox[{"[", "g", ",", "h", "]"}], "]"}], "\[CirclePlus]", 
+   SuperscriptBox[
+    RowBox[{"(", 
+     RowBox[{"-", "1"}], ")"}], 
+    RowBox[{"(", "q", "-", "1", ")", "(", "p", "-", "1", ")"}]], 
+   RowBox[{"[", "g", ",", 
+    RowBox[{"[", "h", ",", "f", "]"}], "]"}], "\[CirclePlus]", 
+   SuperscriptBox[
+    RowBox[{"(", 
+     RowBox[{"-", "1"}], ")"}], 
+    RowBox[{"(", "r", "-", "1", ")", "(", "q", "-", "1", ")"}]], 
+   RowBox[{"[", "h", ",", 
+    RowBox[{"[", "f", ",", "g", "]"}], "]"}], "=", "0"}], 
+  TraditionalForm]], "DisplayFormula",ExpressionUUID->"2447ba1a-6a17-49d5-\
+b77e-1dae7a43d5db"],
+
+Cell[TextData[{
+ "One instance on ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"k", "[", "x", "]", "/", "(", 
+    SuperscriptBox["x", "3"], ")"}], TraditionalForm]],ExpressionUUID->
+  "7d274a9a-bb73-42fa-b903-4b2b5324d1fd"],
+ ", with random cochains of degrees 2, 1, 2:"
+}], "Text",ExpressionUUID->"7c1b262b-825b-44a0-8322-fa1aa08cd324"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"jacobi", "[", 
+    RowBox[{"f_", ",", " ", "g_", ",", " ", "h_"}], "]"}], " ", ":=", " ", 
+   RowBox[{"With", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"p", " ", "=", " ", 
+        RowBox[{"deg", "[", "f", "]"}]}], ",", " ", 
+       RowBox[{"q", " ", "=", " ", 
+        RowBox[{"deg", "[", "g", "]"}]}], ",", " ", 
+       RowBox[{"r", " ", "=", " ", 
+        RowBox[{"deg", "[", "h", "]"}]}]}], "}"}], ",", "\n", "  ", 
+     RowBox[{
+      RowBox[{
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"-", "1"}], ")"}], "^", 
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{"p", " ", "-", " ", "1"}], ")"}], " ", 
+          RowBox[{"(", 
+           RowBox[{"r", " ", "-", " ", "1"}], ")"}]}], ")"}]}], " ", 
+       RowBox[{"Bracket", "[", 
+        RowBox[{"f", ",", " ", 
+         RowBox[{"Bracket", "[", 
+          RowBox[{"g", ",", " ", "h"}], "]"}]}], "]"}]}], " ", "\[CirclePlus]",
+       " ", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"-", "1"}], ")"}], "^", 
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{"q", " ", "-", " ", "1"}], ")"}], " ", 
+          RowBox[{"(", 
+           RowBox[{"p", " ", "-", " ", "1"}], ")"}]}], ")"}]}], " ", 
+       RowBox[{"Bracket", "[", 
+        RowBox[{"g", ",", " ", 
+         RowBox[{"Bracket", "[", 
+          RowBox[{"h", ",", " ", "f"}], "]"}]}], "]"}]}], " ", "\[CirclePlus]",
+       " ", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"-", "1"}], ")"}], "^", 
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{"r", " ", "-", " ", "1"}], ")"}], " ", 
+          RowBox[{"(", 
+           RowBox[{"q", " ", "-", " ", "1"}], ")"}]}], ")"}]}], " ", 
+       RowBox[{"Bracket", "[", 
+        RowBox[{"h", ",", " ", 
+         RowBox[{"Bracket", "[", 
+          RowBox[{"f", ",", " ", "g"}], "]"}]}], "]"}]}]}]}], "]"}]}], 
+  ";"}], "\n", 
+ RowBox[{
+  RowBox[{"SeedRandom", "[", "7", "]"}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"f", ",", " ", "g", ",", " ", "h"}], "}"}], " ", "=", " ", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"Coch", "[", 
+      RowBox[{"B", ",", " ", 
+       RowBox[{"RandomCochain", "[", 
+        RowBox[{"B", ",", " ", "2"}], "]"}]}], "]"}], ",", " ", 
+     RowBox[{"Coch", "[", 
+      RowBox[{"B", ",", " ", 
+       RowBox[{"RandomCochain", "[", 
+        RowBox[{"B", ",", " ", "1"}], "]"}]}], "]"}], ",", " ", 
+     RowBox[{"Coch", "[", 
+      RowBox[{"B", ",", " ", 
+       RowBox[{"RandomCochain", "[", 
+        RowBox[{"B", ",", " ", "2"}], "]"}]}], "]"}]}], "}"}]}], 
+  ";"}], "\n", 
+ RowBox[{
+  RowBox[{"jacobi", "[", 
+   RowBox[{"f", ",", " ", "g", ",", " ", "h"}], "]"}], " ", "==", " ", 
+  "0"}]}], "Input",ExpressionUUID->"e9b7d2da-d8f0-4871-aa26-1c8e4041d30c"],
+
+Cell["\<\
+Every combination of degrees p, q, r from 0 to 2, each with fresh random \
+cochains:\
+\>", "Text",ExpressionUUID->"64da70cb-1e9a-435e-8282-11549e0e1260"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"Table", "[", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"jacobi", "[", 
+       RowBox[{
+        RowBox[{"Coch", "[", 
+         RowBox[{"B", ",", " ", 
+          RowBox[{"RandomCochain", "[", 
+           RowBox[{"B", ",", " ", "p"}], "]"}]}], "]"}], ",", " ", 
+        RowBox[{"Coch", "[", 
+         RowBox[{"B", ",", " ", 
+          RowBox[{"RandomCochain", "[", 
+           RowBox[{"B", ",", " ", "q"}], "]"}]}], "]"}], ",", " ", 
+        RowBox[{"Coch", "[", 
+         RowBox[{"B", ",", " ", 
+          RowBox[{"RandomCochain", "[", 
+           RowBox[{"B", ",", " ", "r"}], "]"}]}], "]"}]}], "]"}], " ", "==", 
+      " ", "0"}], ",", "\n", "  ", 
+     RowBox[{"{", 
+      RowBox[{"p", ",", " ", "0", ",", " ", "2"}], "}"}], ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"q", ",", " ", "0", ",", " ", "2"}], "}"}], ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"r", ",", " ", "0", ",", " ", "2"}], "}"}]}], "]"}], " ", "//", 
+   " ", "Flatten"}], " ", "//", " ", "Counts"}]], "Input",ExpressionUUID->\
+"5fa851b1-4617-4496-a7e0-5e5ea514a6f3"],
+
+Cell[TextData[{
+ "Graded antisymmetry, ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{"[", "f", ",", "g", "]"}], "=", 
+    RowBox[{"-", 
+     SuperscriptBox[
+      RowBox[{"(", 
+       RowBox[{"-", "1"}], ")"}], 
+      RowBox[{"(", "p", "-", "1", ")", "(", "q", "-", "1", ")"}]]}], 
+    RowBox[{"[", "g", ",", "f", "]"}]}], TraditionalForm]],ExpressionUUID->
+  "f7e5fd22-2d26-4e09-b8a3-bd96a415649e"],
+ ", and the differential as a bracket with the product, ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{"\[Delta]", "f"}], "=", 
+    SuperscriptBox[
+     RowBox[{"(", 
+      RowBox[{"-", "1"}], ")"}], 
+     RowBox[{"p", "-", "1"}]], 
+    RowBox[{"[", "\[Mu]", ",", "f", "]"}]}], TraditionalForm]],ExpressionUUID->
+  "a9628978-a1e2-42aa-a1ae-cf04a9cd0d63"],
+ ":"
+}], "Text",ExpressionUUID->"f6a3dbd4-e7cc-430d-9a29-0f97508ed944"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Bracket", "[", 
+   RowBox[{"f", ",", " ", "g"}], "]"}], " ", "==", " ", 
+  RowBox[{
+   RowBox[{"-", 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{"-", "1"}], ")"}], "^", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"deg", "[", "f", "]"}], " ", "-", " ", "1"}], ")"}], " ", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"deg", "[", "g", "]"}], " ", "-", " ", "1"}], ")"}]}], 
+      ")"}]}]}], " ", 
+   RowBox[{"Bracket", "[", 
+    RowBox[{"g", ",", " ", "f"}], "]"}]}]}]], "Input",ExpressionUUID->\
+"4bec6d9c-acf6-4a63-a069-6bb6594551a2"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"\[Mu]", " ", "=", " ", 
+   RowBox[{"Coch", "[", 
+    RowBox[{"B", ",", " ", 
+     RowBox[{"Mu", "[", "B", "]"}]}], "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"\[Delta]", "[", "f", "]"}], " ", "==", " ", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{"-", "1"}], ")"}], "^", 
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"deg", "[", "f", "]"}], " ", "-", " ", "1"}], ")"}]}], " ", 
+   RowBox[{"Bracket", "[", 
+    RowBox[{"\[Mu]", ",", " ", "f"}], "]"}]}]}]}], "Input",ExpressionUUID->\
+"f2851c1a-a28f-437a-80d6-ad152b2d3df5"],
+
+Cell[TextData[{
+ "On cohomology classes the bracket of cocycles is again a cocycle, and the \
+Jacobi identity holds in ",
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["HH", "*"], TraditionalForm]],ExpressionUUID->
+  "43f29bbf-9245-4b6f-b2ea-6534ed31c558"],
+ ". Here on the cocycles representing ",
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["HH", "1"], TraditionalForm]],ExpressionUUID->
+  "3ff9f28d-bfe3-4082-a1d6-80585f4d1f3e"],
+ " and ",
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["HH", "2"], TraditionalForm]],ExpressionUUID->
+  "91f291bc-74ce-4784-a6cc-5a6660ad2808"],
+ " of ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"k", "[", "x", "]", "/", "(", 
+    SuperscriptBox["x", "3"], ")"}], TraditionalForm]],ExpressionUUID->
+  "7f127324-e14f-4bd6-a149-7717215b5081"],
+ ":"
+}], "Text",ExpressionUUID->"c9517bbc-9a2a-431e-b31a-ac5f500c1d2e"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"classes", " ", "=", " ", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"Coch", "[", 
+      RowBox[{"B", ",", " ", "#"}], "]"}], " ", "&"}], " ", "/@", " ", 
+    RowBox[{"Join", "[", 
+     RowBox[{
+      RowBox[{"HHBasis", "[", 
+       RowBox[{"B", ",", " ", "1"}], "]"}], ",", " ", 
+      RowBox[{"HHBasis", "[", 
+       RowBox[{"B", ",", " ", "2"}], "]"}]}], "]"}]}]}], ";"}], "\n", 
+ RowBox[{"And", " ", "@@", " ", 
+  RowBox[{"Flatten", "@", 
+   RowBox[{"Table", "[", 
+    RowBox[{
+     RowBox[{
+      RowBox[{
+       RowBox[{"\[Delta]", "[", 
+        RowBox[{"Bracket", "[", 
+         RowBox[{"u", ",", " ", "v"}], "]"}], "]"}], " ", "==", " ", "0"}], 
+      " ", "&&", " ", 
+      RowBox[{
+       RowBox[{"jacobi", "[", 
+        RowBox[{"u", ",", " ", "v", ",", " ", "w"}], "]"}], " ", "==", " ", 
+       "0"}]}], ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"u", ",", " ", "classes"}], "}"}], ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"v", ",", " ", "classes"}], "}"}], ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"w", ",", " ", "classes"}], "}"}]}], "]"}]}]}]}], "Input",Expres\
+sionUUID->"8535b5cf-dec5-4225-be8a-7d1aefc81cc5"],
+
+Cell["7. Motivating examples for each degree", "Section",ExpressionUUID->"c3bdee08-086b-49de-a619-377cb95178ca"],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["HH", "0"], TraditionalForm]],ExpressionUUID->
+  "1b9319e6-f2ba-4f9e-9f79-0b5d0bc81025"],
+ ": the elements that commute with everything"
+}], "Subsection",ExpressionUUID->"ce1a5629-6432-4a7a-9d56-fa0084bc36fa"],
+
+Cell["\<\
+The coboundary of an element is its commutator with everything else. In the \
+quantum plane, x and y do not commute unless q = 1, but xy commutes with \
+every element:\
+\>", "Text",ExpressionUUID->"9458e5a2-6def-4b55-80bf-877ef0dcb133"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"A", " ", "=", " ", 
+   RowBox[{"QuantumPlane", "[", "q", "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"one", ",", " ", "x", ",", " ", "y", ",", " ", "xy"}], "}"}], " ",
+    "=", " ", 
+   RowBox[{"Generators", "[", "A", "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"cx", " ", "=", " ", 
+    RowBox[{"Coch", "[", 
+     RowBox[{"A", ",", " ", 
+      RowBox[{"x", "[", 
+       RowBox[{"[", "2", "]"}], "]"}]}], "]"}]}], ";"}], "          ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{"the", " ", "element", " ", "x"}], ",", " ", 
+    RowBox[{
+     RowBox[{"viewed", " ", "as", " ", "a", " ", "0"}], "-", "cochain"}]}], 
+   " ", "*)"}]}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"\[Delta]", "[", "cx", "]"}], "[", "y", "]"}], " ", "==", " ", 
+  RowBox[{
+   RowBox[{"y", " ", "\[CircleTimes]", " ", "x"}], " ", "\[CirclePlus]", " ", 
+   
+   RowBox[{"-", 
+    RowBox[{"(", 
+     RowBox[{"x", " ", "\[CircleTimes]", " ", "y"}], ")"}]}]}]}]}], "Input",Ex\
+pressionUUID->"9d8e8cab-41a3-4aeb-965e-2187934b2ba1"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"\[Delta]", "[", "cx", "]"}], "[", "y", "]"}], 
+  "                    ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{"q", " ", "-", " ", "1"}], ")"}], " ", 
+     RowBox[{"xy", " ", ":", " ", 
+      RowBox[{
+      "x", " ", "commutes", " ", "with", " ", "y", " ", "only", " ", "when", " ",
+        "q"}]}]}], " ", "=", " ", "1"}], " ", "*)"}]}]], "Input",ExpressionUUI\
+D->"553f6da0-7c46-46ac-9f2f-83b54227370b"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"\[Delta]", "[", 
+   RowBox[{"Coch", "[", 
+    RowBox[{"A", ",", " ", 
+     RowBox[{"xy", "[", 
+      RowBox[{"[", "2", "]"}], "]"}]}], "]"}], "]"}], " ", "==", " ", "0", 
+  "     ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{"xy", " ", "commutes", " ", "with", " ", 
+     RowBox[{"everything", ":", " ", 
+      RowBox[{"it", " ", "lies", " ", "in", " ", 
+       RowBox[{"HH", "^", "0"}]}]}]}], ",", " ", 
+    RowBox[{"the", " ", "centre"}]}], " ", "*)"}]}]], "Input",ExpressionUUID->\
+"1c0672c3-ebf5-490c-a700-c3a9ddbf7b4a"],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["HH", "1"], TraditionalForm]],ExpressionUUID->
+  "4de9872a-c9a1-4295-9b3c-751357bed0be"],
+ ": derivations are vector fields"
+}], "Subsection",ExpressionUUID->"112a87f5-24f5-4ed4-8068-0676798ba08c"],
+
+Cell[TextData[{
+ "On ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"k", "[", "x", "]", "/", "(", 
+    SuperscriptBox["x", "3"], ")"}], TraditionalForm]],ExpressionUUID->
+  "05f1f292-ef8d-4504-b819-23493d31e0af"],
+ " the map x d/dx (the Euler field: it scales ",
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["x", "n"], TraditionalForm]],ExpressionUUID->
+  "8f5ff591-3bbe-4ea5-b849-b89899d9e56d"],
+ " by n) satisfies the Leibniz rule, so it is a 1-cocycle. A map that is not \
+a derivation has a nonzero coboundary, and the coboundary says exactly how \
+badly Leibniz fails:"
+}], "Text",ExpressionUUID->"456f3b46-5de9-429c-be5a-784a241de46d"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"B", " ", "=", " ", 
+   RowBox[{"TruncatedPolynomial", "[", "3", "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"one", ",", " ", "x", ",", " ", "x2"}], "}"}], " ", "=", " ", 
+   RowBox[{"gens", " ", "=", " ", 
+    RowBox[{"Generators", "[", "B", "]"}]}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"eu", " ", "=", " ", 
+    RowBox[{"Coch", "[", 
+     RowBox[{"B", ",", " ", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{"0", ",", " ", "0", ",", " ", "0"}], "}"}], ",", " ", 
+        RowBox[{"{", 
+         RowBox[{"0", ",", " ", "1", ",", " ", "0"}], "}"}], ",", " ", 
+        RowBox[{"{", 
+         RowBox[{"0", ",", " ", "0", ",", " ", "2"}], "}"}]}], "}"}]}], 
+     "]"}]}], ";"}], "   ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"x", " ", 
+      RowBox[{"d", "/", 
+       RowBox[{"dx", " ", ":", " ", "1"}]}]}], " ", "->", " ", "0"}], ",", 
+    " ", 
+    RowBox[{"x", " ", "->", " ", "x"}], ",", " ", 
+    RowBox[{
+     RowBox[{"x", "^", "2"}], " ", "->", " ", 
+     RowBox[{"2", " ", 
+      RowBox[{"x", "^", "2"}]}]}]}], " ", "*)"}]}], "\n", 
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"eu", "[", "x", "]"}], ",", " ", 
+   RowBox[{"eu", "[", "x2", "]"}], ",", " ", 
+   RowBox[{
+    RowBox[{"eu", "[", 
+     RowBox[{"x", " ", "\[CircleTimes]", " ", "x"}], "]"}], " ", "==", " ", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"eu", "[", "x", "]"}], " ", "\[CircleTimes]", " ", "x"}], " ", "\[CirclePlus]",
+      " ", 
+     RowBox[{"x", " ", "\[CircleTimes]", " ", 
+      RowBox[{"eu", "[", "x", "]"}]}]}]}]}], "}"}]}], "Input",ExpressionUUID->\
+"9ce9aaf6-ff6d-46f8-91a6-950bed1b4485"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"\[Delta]", "[", "eu", "]"}], " ", "==", " ", "0", 
+  "                   ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+   "the", " ", "Leibniz", " ", "rule", " ", "is", " ", "exactly", " ", "the", 
+    " ", "cocycle", " ", "condition"}], " ", "*)"}]}]], "Input",ExpressionUUID\
+->"4e11424c-2cf8-4fd9-ab2f-0e4d93509c21"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"notDer", " ", "=", " ", 
+    RowBox[{"Coch", "[", 
+     RowBox[{"B", ",", " ", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{"0", ",", " ", "0", ",", " ", "0"}], "}"}], ",", " ", 
+        RowBox[{"{", 
+         RowBox[{"0", ",", " ", "1", ",", " ", "0"}], "}"}], ",", " ", 
+        RowBox[{"{", 
+         RowBox[{"0", ",", " ", "0", ",", " ", "1"}], "}"}]}], "}"}]}], 
+     "]"}]}], ";"}], "   ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{"x", " ", "->", " ", "x"}], ",", " ", 
+    RowBox[{
+     RowBox[{"x", "^", "2"}], " ", "->", " ", 
+     RowBox[{
+      RowBox[{"x", "^", "2"}], " ", ":", " ", 
+      RowBox[{"not", " ", "a", " ", "derivation"}]}]}]}], " ", "*)"}]}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"\[Delta]", "[", "notDer", "]"}], "[", 
+   RowBox[{"x", ",", " ", "x"}], "]"}], "               ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{"x", " ", "D", 
+     RowBox[{"(", "x", ")"}]}], " ", "-", " ", 
+    RowBox[{"D", 
+     RowBox[{"(", 
+      RowBox[{"x", "^", "2"}], ")"}]}], " ", "+", " ", 
+    RowBox[{"D", 
+     RowBox[{"(", "x", ")"}], " ", 
+     RowBox[{"x", " ", ":", " ", 
+      RowBox[{
+      "how", " ", "far", " ", "it", " ", "is", " ", "from", " ", 
+       "Leibniz"}]}]}]}], " ", "*)"}]}]}], "Input",ExpressionUUID->"8424e45c-\
+a6b6-4161-a884-efcefd7bab74"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"HHDimension", "[", 
+   RowBox[{"B", ",", " ", "1"}], "]"}], "                  ", 
+  RowBox[{"(*", " ", 
+   RowBox[{"two", " ", "independent", " ", "vector", " ", 
+    RowBox[{"fields", ":", " ", 
+     RowBox[{"x", " ", 
+      RowBox[{"d", "/", "dx"}], " ", "and", " ", 
+      RowBox[{"x", "^", "2"}], " ", 
+      RowBox[{"d", "/", "dx"}]}]}]}], " ", "*)"}]}]], "Input",ExpressionUUID->\
+"13a2d414-4880-4ab7-aed6-a5cfa85f9074"],
+
+Cell[TextData[{
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["HH", "2"], TraditionalForm]],ExpressionUUID->
+  "0ffe67be-6137-48ba-bcf7-b1b1afe38216"],
+ ": bending the product"
+}], "Subsection",ExpressionUUID->"534229c0-439f-4d46-a738-4ebb4fdae070"],
+
+Cell[TextData[{
+ "A 2-cocycle \[Phi] bends the multiplication to ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    RowBox[{"a", "\[CircleTimes]", "b"}], "\[CirclePlus]", 
+    RowBox[{"t", " ", 
+     RowBox[{"\[Phi]", "(", 
+      RowBox[{"a", ",", "b"}], ")"}]}]}], TraditionalForm]],ExpressionUUID->
+  "e32f481e-62db-42d0-a016-b19f9ee38b93"],
+ ". For the dual numbers ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"k", "[", "x", "]", "/", "(", 
+    SuperscriptBox["x", "2"], ")"}], TraditionalForm]],ExpressionUUID->
+  "69df28e4-1d59-4189-8e18-8466d1f53a94"],
+ " the only bend is ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{
+    SuperscriptBox["x", "2"], "=", 
+    RowBox[{"-", "t"}]}], TraditionalForm]],ExpressionUUID->
+  "9a4c4e60-326c-4bda-b848-bf0082609a10"],
+ ". Geometrically, ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"k", "[", "x", "]", "/", "(", 
+    SuperscriptBox["x", "2"], ")"}], TraditionalForm]],ExpressionUUID->
+  "5f97c830-d001-4e64-a1fe-ca78f8306e19"],
+ " is a double point: a point carrying one tangent direction. The bend pulls \
+it apart into two separate points."
+}], "Text",ExpressionUUID->"659683d5-9d11-4005-b041-8b2ec8128bf4"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"D0", " ", "=", " ", 
+   RowBox[{"DualNumbers", "[", "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"one", ",", " ", "x"}], "}"}], " ", "=", " ", 
+   RowBox[{"Generators", "[", "D0", "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"\[Phi]", " ", "=", " ", 
+   RowBox[{"Coch", "[", 
+    RowBox[{"D0", ",", " ", 
+     RowBox[{"First", "@", 
+      RowBox[{"HHBasis", "[", 
+       RowBox[{"D0", ",", " ", "2"}], "]"}]}]}], "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"star", "[", 
+     RowBox[{"a_", ",", " ", "b_"}], "]"}], " ", ":=", " ", 
+    RowBox[{
+     RowBox[{"a", " ", "\[CircleTimes]", " ", "b"}], " ", "\[CirclePlus]", 
+     " ", 
+     RowBox[{"t", " ", 
+      RowBox[{"\[Phi]", "[", 
+       RowBox[{"a", ",", " ", "b"}], "]"}]}]}]}], ";"}], "      ", 
+  RowBox[{"(*", " ", 
+   RowBox[{"the", " ", "bent", " ", "product"}], " ", "*)"}]}], "\n", 
+ RowBox[{
+  RowBox[{"star", "[", 
+   RowBox[{"x", ",", " ", "x"}], "]"}], "                          ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{"x", " ", "x"}], " ", "=", " ", 
+    RowBox[{
+     RowBox[{"-", "t"}], " ", "instead", " ", "of", " ", "0"}]}], " ", 
+   "*)"}]}]}], "Input",ExpressionUUID->"e1c1e244-c3bb-4c1b-96be-521c09fb0526"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"{", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"\[Delta]", "[", "\[Phi]", "]"}], " ", "==", " ", "0"}], ",", 
+    " ", 
+    RowBox[{
+     RowBox[{"star", "[", 
+      RowBox[{
+       RowBox[{"star", "[", 
+        RowBox[{"x", ",", " ", "x"}], "]"}], ",", " ", "x"}], "]"}], " ", "==",
+      " ", 
+     RowBox[{"star", "[", 
+      RowBox[{"x", ",", " ", 
+       RowBox[{"star", "[", 
+        RowBox[{"x", ",", " ", "x"}], "]"}]}], "]"}]}]}], "}"}], "    ", 
+  RowBox[{"(*", " ", 
+   RowBox[{"the", " ", "bend", " ", "respects", " ", "associativity"}], " ", 
+   "*)"}]}]], "Input",ExpressionUUID->"b82b683b-cad5-4407-b3e6-3f8652610089"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Solve", "[", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"X", "^", "2"}], " ", "==", " ", 
+     RowBox[{"-", "t"}]}], ",", " ", "X"}], "]"}], " ", "/.", " ", 
+  RowBox[{"t", " ", "->", " ", 
+   RowBox[{"-", "1", "      ", 
+    RowBox[{"(*", " ", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"at", " ", "t"}], " ", "=", " ", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"-", "1"}], " ", "the", " ", "double", " ", "point", " ", 
+         RowBox[{"x", "^", "2"}]}], " ", "=", " ", 
+        RowBox[{
+         RowBox[{
+         "0", " ", "splits", " ", "into", " ", "the", " ", "two", " ", 
+          "points", " ", "x"}], " ", "=", " ", "1"}]}]}], ",", " ", 
+      RowBox[{"x", " ", "=", " ", 
+       RowBox[{"-", "1"}]}]}], " ", "*)"}]}]}]}]], "Input",ExpressionUUID->\
+"93f57736-c833-4d0b-b170-e7abdc95419e"],
+
+Cell[TextData[{
+ "A coboundary only bends the product by a change of coordinates, which is \
+why ",
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["HH", "2"], TraditionalForm]],ExpressionUUID->
+  "9abd075f-bc97-498b-b227-697047bd2b90"],
+ " counts the genuinely different deformations:"
+}], "Text",ExpressionUUID->"b7858557-b2da-49dc-af8a-9b18b459345c"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"g", " ", "=", " ", 
+    RowBox[{"Coch", "[", 
+     RowBox[{"D0", ",", " ", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{"0", ",", " ", "0"}], "}"}], ",", " ", 
+        RowBox[{"{", 
+         RowBox[{"1", ",", " ", "0"}], "}"}]}], "}"}]}], "]"}]}], ";"}], 
+  "      ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"g", 
+      RowBox[{"(", "1", ")"}]}], " ", "=", " ", "0"}], ",", " ", 
+    RowBox[{
+     RowBox[{"g", 
+      RowBox[{"(", "x", ")"}]}], " ", "=", " ", "1"}]}], " ", "*)"}]}], "\n", 
+
+ RowBox[{
+  RowBox[{"{", 
+   RowBox[{
+    RowBox[{"CoboundaryQ", "[", 
+     RowBox[{"D0", ",", " ", 
+      RowBox[{
+       RowBox[{"\[Delta]", "[", "g", "]"}], "[", 
+       RowBox[{"[", "2", "]"}], "]"}]}], "]"}], ",", " ", 
+    RowBox[{"CoboundaryQ", "[", 
+     RowBox[{"D0", ",", " ", 
+      RowBox[{"\[Phi]", "[", 
+       RowBox[{"[", "2", "]"}], "]"}]}], "]"}]}], "}"}], "   ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{
+    "a", " ", "coboundary", " ", "only", " ", "changes", " ", "coordinates"}],
+     ";", " ", 
+    RowBox[{"\[Phi]", " ", "is", " ", "a", " ", "genuine", " ", "bend"}]}], 
+   " ", "*)"}]}]}], "Input",ExpressionUUID->"a30d1f3c-e442-4289-9f11-\
+1f7372df4e1d"],
+
+Cell[TextData[{
+ "One step further, ",
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["HH", "3"], TraditionalForm]],ExpressionUUID->
+  "27e299f7-76ea-499c-b6a9-23ba9d7a5825"],
+ " holds the obstructions: a bend that works to first order may fail to \
+extend to all orders, and the failure is a class in ",
+ Cell[BoxData[
+  FormBox[
+   SuperscriptBox["HH", "3"], TraditionalForm]],ExpressionUUID->
+  "6a17aa8b-c91d-4889-81c2-aa25b89f44b2"],
+ ", as in section 5."
+}], "Text",ExpressionUUID->"0b45d8f9-601a-45d3-98ee-6f89478a0e4d"],
+
+Cell["\[Copyright] Computational Classnotes \[CenterDot] CC BY-NC-SA 4.0", \
+"Text",ExpressionUUID->"ae7662ed-8713-4164-852e-4cf21a7a0855"]
+},
+FrontEndVersion->"15.0 for Mac OS X ARM (64-bit) (May 19, 2026)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"3be134ef-88b6-47ac-81c1-d18b17adbad2"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[1460, 33, 107, 0, 70, "Title",ExpressionUUID->"4d0b799c-ca7d-4e7f-88b5-681714b91ee3"],
+Cell[1570, 35, 303, 7, 70, "Subtitle",ExpressionUUID->"96056b27-a287-4306-977f-d61200efa4ae"],
+Cell[1876, 44, 139, 1, 70, "Text",ExpressionUUID->"e1fa1079-2c2b-47e1-aeca-45a8cb599162"],
+Cell[2018, 47, 195, 5, 70, "Input",ExpressionUUID->"4479dad3-abaa-4a94-a10d-297e5d8a70c0",
+ Evaluatable->False],
+Cell[2216, 54, 175, 3, 70, "Output",ExpressionUUID->"882dddcd-a138-44ad-bbb4-f55a8dda7473"],
+Cell[2394, 59, 1008, 32, 70, "Text",ExpressionUUID->"243176e1-27de-47e3-8865-dbfb6d9b74de"],
+Cell[3405, 93, 263, 6, 70, "Input",ExpressionUUID->"993487b9-5c1c-4a4d-a4a6-1bb0392d9360"],
+Cell[3671, 101, 106, 0, 70, "Section",ExpressionUUID->"673f9eac-0824-42df-bbbb-fc4e3447b521"],
+Cell[3780, 103, 97, 0, 70, "Subsection",ExpressionUUID->"c657e7c2-1410-4592-9618-519bd311bd3f"],
+Cell[3880, 105, 344, 5, 70, "Text",ExpressionUUID->"1e55f246-5ee8-4026-bfbc-4cfa20b4fbd5"],
+Cell[4227, 112, 536, 7, 70, "Text",ExpressionUUID->"420a901d-66bc-4494-b5ad-c81a41c89951"],
+Cell[4766, 121, 11762, 322, 70, "Input",ExpressionUUID->"02f2ba30-ef49-42a4-aec5-f026f4adeb59"],
+Cell[16531, 445, 13856, 340, 70, "Output",ExpressionUUID->"6ded7283-4148-4ebe-b59d-f224796a5efa"],
+Cell[30390, 787, 285, 4, 70, "Text",ExpressionUUID->"51e3d484-f0d4-45e6-ac01-c9f376712319"],
+Cell[30678, 793, 9386, 251, 70, "Input",ExpressionUUID->"7e5e488b-10c5-4c65-af36-b8d9a4357827"],
+Cell[40067, 1046, 8778, 235, 70, "Output",ExpressionUUID->"9635d536-b8f4-4601-b7ed-117e055740c5"],
+Cell[48848, 1283, 804, 20, 70, "Text",ExpressionUUID->"0c11c353-8ced-40b2-8630-7dad71eb5d9c"],
+Cell[49655, 1305, 2463, 69, 70, "Input",ExpressionUUID->"08bf8042-e1f0-4517-ac03-b52550fd06ef"],
+Cell[52121, 1376, 424, 11, 70, "Input",ExpressionUUID->"6a69f8b2-9952-4f81-9396-bbaa5c378faf"],
+Cell[52548, 1389, 627, 15, 70, "Text",ExpressionUUID->"1196ed3a-6fe1-425d-abbd-ab128f3ac6c1"],
+Cell[53178, 1406, 844, 24, 70, "Input",ExpressionUUID->"3d9969cb-6740-4b4a-b420-47bdf546656a"],
+Cell[54025, 1432, 612, 17, 70, "Input",ExpressionUUID->"9069416e-7fcf-4d2a-ab54-1057e781b6c3"],
+Cell[54640, 1451, 207, 3, 70, "Text",ExpressionUUID->"4d28071f-1212-46f9-ad1d-e394ac30d132"],
+Cell[54850, 1456, 1169, 32, 70, "Input",ExpressionUUID->"dc364cdf-ae63-4f14-8f99-54bb6a2aa74b"],
+Cell[56022, 1490, 248, 4, 70, "Text",ExpressionUUID->"2d6d0165-1638-45cc-b5a0-b75f7a5150b5"],
+Cell[56273, 1496, 101, 0, 70, "Subsection",ExpressionUUID->"3b460fb5-39e3-45e4-ab1f-3f387750eeef"],
+Cell[56377, 1498, 874, 20, 70, "Text",ExpressionUUID->"eb9f83fe-a9de-414c-8116-9ff26c86e0e5"],
+Cell[57254, 1520, 371, 11, 70, "DisplayFormula",ExpressionUUID->"828c199c-188d-482e-b3ed-941eb36500bb"],
+Cell[57628, 1533, 150, 2, 70, "Text",ExpressionUUID->"50a6cc56-1106-4997-938f-dbbca187cd2a"],
+Cell[57781, 1537, 732, 20, 70, "DisplayFormula",ExpressionUUID->"d6d0ce33-da5c-438d-bd1f-4e106df1b52c"],
+Cell[58516, 1559, 158, 3, 70, "Text",ExpressionUUID->"6b2234c4-2654-4c7c-a203-cc344dc72815"],
+Cell[58677, 1564, 963, 27, 70, "DisplayFormula",ExpressionUUID->"647845e1-89cf-4d36-9ea5-492920f219f2"],
+Cell[59643, 1593, 428, 11, 70, "Text",ExpressionUUID->"f92c7cc6-527c-4907-988d-856403c1bc1d"],
+Cell[60074, 1606, 5033, 138, 70, "Text",ExpressionUUID->"8a2a9110-5dc6-4633-a4c0-99604371df65"],
+Cell[65110, 1746, 634, 14, 70, "Text",ExpressionUUID->"d9d77d2f-0e46-4108-bec4-698ecda7c37a"],
+Cell[65747, 1762, 94, 0, 70, "Section",ExpressionUUID->"13da029e-7dd4-4e75-aee7-46995bf1fe49"],
+Cell[65844, 1764, 824, 22, 70, "Text",ExpressionUUID->"2d8b6616-b7d9-4721-a329-35dca74137a4"],
+Cell[66671, 1788, 9360, 270, 70, "Input",ExpressionUUID->"a22476a8-92b9-48c4-bd01-8cdf44517251"],
+Cell[76034, 2060, 99, 0, 70, "Subsection",ExpressionUUID->"8be0d753-9996-4526-b3e4-0381c582c174"],
+Cell[76136, 2062, 192, 3, 70, "Text",ExpressionUUID->"899f251b-2c5d-4ba5-bf35-f92534f84a2a"],
+Cell[76331, 2067, 337, 10, 70, "DisplayFormula",ExpressionUUID->"7a30f245-4fa3-4e25-b557-b28fc85ed58f"],
+Cell[76671, 2079, 587, 15, 70, "Text",ExpressionUUID->"a03d417c-7876-4ca0-b074-55f339a133af"],
+Cell[77261, 2096, 8656, 248, 70, "Text",ExpressionUUID->"f8c73add-ca36-4710-b35d-c0708683e14d"],
+Cell[85920, 2346, 109, 0, 70, "Text",ExpressionUUID->"25796fb2-c1d0-4087-99bf-e7d1bcbb5ad2"],
+Cell[86032, 2348, 1118, 34, 70, "Item",ExpressionUUID->"237fd684-a695-4492-a347-499a8226c795"],
+Cell[87153, 2384, 352, 9, 70, "Item",ExpressionUUID->"511c35ae-903b-4bce-9758-9a3ff876afed"],
+Cell[87508, 2395, 419, 10, 70, "Item",ExpressionUUID->"b903379f-c160-41a9-8b8f-ccb7b3c3be39"],
+Cell[87930, 2407, 460, 11, 70, "Text",ExpressionUUID->"a93d2523-1e10-488b-b754-d7a32dc08541"],
+Cell[88393, 2420, 116, 0, 70, "Section",ExpressionUUID->"dc697ddd-dd9e-4e79-8b36-e2ce14c9a783"],
+Cell[88512, 2422, 539, 10, 70, "Text",ExpressionUUID->"f6b9b717-bad5-429f-804f-6e3dffc49df3"],
+Cell[89054, 2434, 6465, 180, 70, "Input",ExpressionUUID->"acaa9f81-3db5-4ed1-897f-d1cf1634a1a9"],
+Cell[95522, 2616, 428, 11, 70, "Input",ExpressionUUID->"ab396f60-3160-48c6-9629-f3f1f9da4663"],
+Cell[95953, 2629, 381, 10, 70, "Input",ExpressionUUID->"5d91617a-059b-43a4-91db-f6d6f36140f1"],
+Cell[96337, 2641, 569, 16, 70, "Input",ExpressionUUID->"7ca83ef3-ee6f-4f07-9214-00338c94f6fe"],
+Cell[96909, 2659, 488, 13, 70, "Input",ExpressionUUID->"e151db18-ed40-4c23-80a2-88c62b092963"],
+Cell[97400, 2674, 349, 9, 70, "Input",ExpressionUUID->"33a5284c-a66a-4b7e-b468-3c7694d47283"],
+Cell[97752, 2685, 99, 0, 70, "Section",ExpressionUUID->"abc3e467-0a23-464c-9b2f-e9ba9d280db3"],
+Cell[97854, 2687, 962, 33, 70, "Text",ExpressionUUID->"669ff063-1232-46fc-9b58-87cec7b27a9d"],
+Cell[98819, 2722, 416, 11, 70, "Input",ExpressionUUID->"f2bfbef5-6b27-4b41-8060-cbf849e16b59"],
+Cell[99238, 2735, 628, 18, 70, "Input",ExpressionUUID->"4537deef-729c-4d4b-a014-1c5152ad9b80"],
+Cell[99869, 2755, 458, 11, 70, "Text",ExpressionUUID->"edc3c890-ed0f-4bec-a024-55d1df0cdbcc"],
+Cell[100330, 2768, 551, 15, 70, "Input",ExpressionUUID->"440da23f-89b7-4bc4-b802-4371ef8a128b"],
+Cell[100884, 2785, 270, 7, 70, "Input",ExpressionUUID->"a207e983-b2cb-4118-b1b9-f9c69ef465db"],
+Cell[101157, 2794, 479, 14, 70, "Input",ExpressionUUID->"3e76f72c-cc9e-4ce0-8020-4048d5f9c9f8"],
+Cell[101639, 2810, 630, 18, 70, "Input",ExpressionUUID->"60750346-6a4c-4c82-8689-0aea6dc69cca"],
+Cell[102272, 2830, 130, 0, 70, "Text",ExpressionUUID->"c215eec7-8d3e-4792-80ff-e3bbd5f3caf5"],
+Cell[102405, 2832, 833, 22, 70, "Input",ExpressionUUID->"39d47883-8e52-4403-8c1f-a8f64c5eee9a"],
+Cell[103241, 2856, 756, 20, 70, "Input",ExpressionUUID->"3fd1b449-450c-4ee7-9fed-9aaffa997560"],
+Cell[104000, 2878, 466, 13, 70, "Input",ExpressionUUID->"adc708c9-fb4e-446a-b696-4c61f872d7e9"],
+Cell[104469, 2893, 117, 0, 70, "Section",ExpressionUUID->"ea3b025e-8a50-4798-b9f4-45d8afc2a4ea"],
+Cell[104589, 2895, 838, 25, 70, "Text",ExpressionUUID->"32d185f4-3f4b-4dab-b473-529b4cd0a754"],
+Cell[105430, 2922, 658, 18, 70, "Input",ExpressionUUID->"0b66a16c-e949-419f-aba1-6493c54b1ae1"],
+Cell[106091, 2942, 708, 19, 70, "Input",ExpressionUUID->"36b6d52c-73b0-4446-9bbf-15da24e905e7"],
+Cell[106802, 2963, 144, 2, 70, "Text",ExpressionUUID->"5b1a832c-dfd4-4fa4-9677-4d6417523218"],
+Cell[106949, 2967, 963, 27, 70, "DisplayFormula",ExpressionUUID->"38f74643-373f-413f-bd6c-c881d7af2780"],
+Cell[107915, 2996, 1576, 41, 70, "Input",ExpressionUUID->"43d17e34-c315-4fb6-aa68-ff7aca7cfe80"],
+Cell[109494, 3039, 194, 4, 70, "Input",ExpressionUUID->"44757bed-9f71-4918-9a23-af990da7732f"],
+Cell[109691, 3045, 907, 29, 70, "Text",ExpressionUUID->"4f182453-ab0f-4c5f-aca5-aad1d0e6f02b"],
+Cell[110601, 3076, 1156, 31, 70, "Input",ExpressionUUID->"a2361ec0-610d-41cb-97b7-2821905d6c26"],
+Cell[111760, 3109, 515, 14, 70, "Input",ExpressionUUID->"70cbb1bc-254b-4755-a37a-c23fb8e50fc0"],
+Cell[112278, 3125, 106, 0, 70, "Section",ExpressionUUID->"3e3f83e9-9b85-4b9b-8e84-cabed7e2f038"],
+Cell[112387, 3127, 678, 23, 70, "Text",ExpressionUUID->"b2e04c03-374f-4f06-b0a9-a23ed66cd2a7"],
+Cell[113068, 3152, 918, 24, 70, "Input",ExpressionUUID->"03ef1b87-dc3c-47e3-b1fa-166439d03cfe"],
+Cell[113989, 3178, 294, 8, 70, "Input",ExpressionUUID->"95479411-95a8-48cc-a663-bc3754d7828c"],
+Cell[114286, 3188, 729, 19, 70, "Input",ExpressionUUID->"d0bf4881-9cf1-460a-a169-22d192bf6bb8"],
+Cell[115018, 3209, 158, 3, 70, "Text",ExpressionUUID->"38b32f1c-93b2-4685-8aec-a95eb7273766"],
+Cell[115179, 3214, 594, 16, 70, "Input",ExpressionUUID->"c3fe97ad-625f-405b-8ac6-5e9d0341d420"],
+Cell[115776, 3232, 125, 0, 70, "Section",ExpressionUUID->"48f618bc-ed96-45c7-ab23-dc8b0cad793d"],
+Cell[115904, 3234, 459, 12, 70, "Text",ExpressionUUID->"fdc38b1c-77e5-4b5f-b9ba-3de54bc94584"],
+Cell[116366, 3248, 433, 11, 70, "DisplayFormula",ExpressionUUID->"15864340-3d58-448b-876a-f6e176672ad7"],
+Cell[116802, 3261, 1415, 41, 70, "Input",ExpressionUUID->"162c4de8-9c09-48c2-a130-9f3ab362a7cb"],
+Cell[118220, 3304, 130, 0, 70, "Text",ExpressionUUID->"afd4493f-57f7-44a8-8b78-6c21353647d4"],
+Cell[118353, 3306, 806, 22, 70, "DisplayFormula",ExpressionUUID->"2447ba1a-6a17-49d5-b77e-1dae7a43d5db"],
+Cell[119162, 3330, 332, 8, 70, "Text",ExpressionUUID->"7c1b262b-825b-44a0-8322-fa1aa08cd324"],
+Cell[119497, 3340, 2896, 85, 70, "Input",ExpressionUUID->"e9b7d2da-d8f0-4871-aa26-1c8e4041d30c"],
+Cell[122396, 3427, 163, 3, 70, "Text",ExpressionUUID->"64da70cb-1e9a-435e-8282-11549e0e1260"],
+Cell[122562, 3432, 1085, 28, 70, "Input",ExpressionUUID->"5fa851b1-4617-4496-a7e0-5e5ea514a6f3"],
+Cell[123650, 3462, 841, 25, 70, "Text",ExpressionUUID->"f6a3dbd4-e7cc-430d-9a29-0f97508ed944"],
+Cell[124494, 3489, 628, 20, 70, "Input",ExpressionUUID->"4bec6d9c-acf6-4a63-a069-6bb6594551a2"],
+Cell[125125, 3511, 570, 17, 70, "Input",ExpressionUUID->"f2851c1a-a28f-437a-80d6-ad152b2d3df5"],
+Cell[125698, 3530, 838, 24, 70, "Text",ExpressionUUID->"c9517bbc-9a2a-431e-b31a-ac5f500c1d2e"],
+Cell[126539, 3556, 1164, 33, 70, "Input",ExpressionUUID->"8535b5cf-dec5-4225-be8a-7d1aefc81cc5"],
+Cell[127706, 3591, 112, 0, 70, "Section",ExpressionUUID->"c3bdee08-086b-49de-a619-377cb95178ca"],
+Cell[127821, 3593, 269, 6, 70, "Subsection",ExpressionUUID->"ce1a5629-6432-4a7a-9d56-fa0084bc36fa"],
+Cell[128093, 3601, 246, 4, 70, "Text",ExpressionUUID->"9458e5a2-6def-4b55-80bf-877ef0dcb133"],
+Cell[128342, 3607, 1077, 32, 70, "Input",ExpressionUUID->"9d8e8cab-41a3-4aeb-965e-2187934b2ba1"],
+Cell[129422, 3641, 495, 14, 70, "Input",ExpressionUUID->"553f6da0-7c46-46ac-9f2f-83b54227370b"],
+Cell[129920, 3657, 563, 15, 70, "Input",ExpressionUUID->"1c0672c3-ebf5-490c-a700-c3a9ddbf7b4a"],
+Cell[130486, 3674, 257, 6, 70, "Subsection",ExpressionUUID->"112a87f5-24f5-4ed4-8068-0676798ba08c"],
+Cell[130746, 3682, 633, 15, 70, "Text",ExpressionUUID->"456f3b46-5de9-429c-be5a-784a241de46d"],
+Cell[131382, 3699, 1694, 49, 70, "Input",ExpressionUUID->"9ce9aaf6-ff6d-46f8-91a6-950bed1b4485"],
+Cell[133079, 3750, 346, 8, 70, "Input",ExpressionUUID->"4e11424c-2cf8-4fd9-ab2f-0e4d93509c21"],
+Cell[133428, 3760, 1374, 40, 70, "Input",ExpressionUUID->"8424e45c-a6b6-4161-a884-efcefd7bab74"],
+Cell[134805, 3802, 462, 11, 70, "Input",ExpressionUUID->"13a2d414-4880-4ab7-aed6-a5cfa85f9074"],
+Cell[135270, 3815, 247, 6, 70, "Subsection",ExpressionUUID->"534229c0-439f-4d46-a738-4ebb4fdae070"],
+Cell[135520, 3823, 1136, 31, 70, "Text",ExpressionUUID->"659683d5-9d11-4005-b041-8b2ec8128bf4"],
+Cell[136659, 3856, 1280, 37, 70, "Input",ExpressionUUID->"e1c1e244-c3bb-4c1b-96be-521c09fb0526"],
+Cell[137942, 3895, 664, 19, 70, "Input",ExpressionUUID->"b82b683b-cad5-4407-b3e6-3f8652610089"],
+Cell[138609, 3916, 843, 23, 70, "Input",ExpressionUUID->"93f57736-c833-4d0b-b170-e7abdc95419e"],
+Cell[139455, 3941, 349, 8, 70, "Text",ExpressionUUID->"b7858557-b2da-49dc-af8a-9b18b459345c"],
+Cell[139807, 3951, 1279, 41, 70, "Input",ExpressionUUID->"a30d1f3c-e442-4289-9f11-1f7372df4e1d"],
+Cell[141089, 3994, 524, 13, 70, "Text",ExpressionUUID->"0b45d8f9-601a-45d3-98ee-6f89478a0e4d"],
+Cell[141616, 4009, 139, 1, 70, "Text",ExpressionUUID->"ae7662ed-8713-4164-852e-4cf21a7a0855"]
+}
+]
+*)
+
+(* End of internal cache information *)
