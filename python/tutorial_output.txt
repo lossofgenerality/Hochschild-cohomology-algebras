@@ -1,0 +1,180 @@
+
+==============================================================================
+1. The Hochschild complex, written out for the dual numbers A = k[x]/(x²)
+==============================================================================
+  C^n(A,A) = Hom_k(A^{⊗n}, A).  Normalizing (cochains vanish if any input is 1)
+  lets us feed only the 'radical' basis {x}.  So a basis of C^n is
+  (chain of n x's, output ∈ {1, x}):  dim C^n = 2 for every n.
+  basis of C^0: [(('@', 0), 'e0'), (('@', 0), 'x')]
+  basis of C^1: [(('x',), 'e0'), (('x',), 'x')]
+  basis of C^2: [(('x', 'x'), 'e0'), (('x', 'x'), 'x')]
+  
+  The differential  (df)(a1..a_{n+1}) = a1 f(a2..) + Σ(-1)^i f(..a_i a_{i+1}..) + (-1)^{n+1} f(..a_n) a_{n+1}.
+  Since x·x = 0, the middle terms vanish here, and only the outer terms survive:
+  d^0 =
+      [0, 0, 0, 0]  (as a (2, 2) matrix, rows=C^1)
+  d^1 =
+      [0, 0, 2, 0]  (as a (2, 2) matrix, rows=C^2)
+  d^2 =
+      [0, 0, 0, 0]  (as a (2, 2) matrix, rows=C^3)
+  Row 2 of d^1 says: for f(x) = 1,  (df)(x,x) = x·1 - f(x·x) + 1·x = 2x.  So d^1 ≠ 0 exactly
+  when 2 ≠ 0 in k — this single entry '2' is the whole difference between char 0 and char 2.
+  ✔ d∘d = 0 in every computed degree
+  dim HH^n, n=0..5 :  [2, 1, 1, 1, 1, 1]
+  ✔ char 0:  HH^0 = A (commutative), HH^n ≅ k for n ≥ 1
+  
+  Reading the low degrees:
+  HH^0 = centre Z(A): cocycles [{'e0': 1}, {'x': 1}]
+  HH^1 = Der(A)/Inn(A): representative derivation {('x',): {'x': 1}}
+       i.e. D(x) = x — the Euler derivation x d/dx.  (Inner derivations are 0: A commutative.)
+  HH^2 = infinitesimal deformations: representative {('x', 'x'): {'e0': 1}}
+       i.e. μ_t(x, x) = x·x + t·f(x,x) = t·1 — the deformation  k[x]/(x² - t).
+       For t ≠ 0 that algebra is k×k (semisimple): the dual numbers are NOT rigid.
+
+==============================================================================
+2. The characteristic matters:  truncated polynomial rings k[x]/(x^n)
+==============================================================================
+  Theorem: for A = k[x]/(x^n),  HH^0 = A,  and for i ≥ 1
+      HH^{2i-1} ≅ HH^{2i} ≅ k^{n-1}   if char k ∤ n,
+      HH^{2i-1} ≅ HH^{2i} ≅ k^{n}     if char k | n.
+  Reason: the periodic resolution has maps 'multiply by x' and 'multiply by n x^{n-1}';
+  the second vanishes exactly when p | n.
+  ✔ k[x]/x^2 over F_(char 0): HH^0..4 = [2, 1, 1, 1, 1]
+  ✔ k[x]/x^2 over F_2: HH^0..4 = [2, 2, 2, 2, 2]
+  ✔ k[x]/x^3 over F_(char 0): HH^0..4 = [3, 2, 2, 2, 2]
+  ✔ k[x]/x^3 over F_3: HH^0..4 = [3, 3, 3, 3, 3]
+  ✔ k[x]/x^3 over F_2: HH^0..4 = [3, 2, 2, 2, 2]
+  ✔ k[x]/x^4 over F_2: HH^0..4 = [4, 4, 4, 4, 4]
+  ✔ k[x]/x^4 over F_3: HH^0..4 = [4, 3, 3, 3, 3]
+
+==============================================================================
+3. HH*(A) is an algebra: the cup product
+==============================================================================
+  (f ∪ g)(a1..a_{m+n}) = f(a1..a_m)·g(a_{m+1}..a_{m+n}).  It satisfies the Leibniz rule
+  d(f∪g) = df∪g + (-1)^m f∪dg, so it descends to cohomology, where Gerstenhaber proved it is
+  GRADED COMMUTATIVE:  [f]∪[g] = (-1)^{mn} [g]∪[f].
+  ✔ [f]∪[g] = (-1)^1[g]∪[f] on HH^1 × HH^1
+  ✔ [f]∪[g] = (-1)^2[g]∪[f] on HH^1 × HH^2
+  ✔ [f]∪[g] = (-1)^4[g]∪[f] on HH^2 × HH^2
+  ✔ [f]∪[g] = (-1)^0[g]∪[f] on HH^0 × HH^1
+  ✔ [f]∪[g] = (-1)^3[g]∪[f] on HH^1 × HH^3
+  
+  Structure constants for k[x]/x² in char 0  (1, x ∈ HH^0;  u ∈ HH^1;  v ∈ HH^2):
+    HH^0 × HH^1 → HH^1:  [[[1]], [[0]]]
+    HH^0 × HH^2 → HH^2:  [[[1]], [[0]]]
+    HH^1 × HH^1 → HH^2:  [[[0]]]
+    HH^1 × HH^2 → HH^3:  [[[1]]]
+    HH^2 × HH^2 → HH^4:  [[[1]]]
+    HH^1 × HH^4 → HH^5:  [[[1]]]
+    HH^2 × HH^3 → HH^5:  [[[1]]]
+  Reading off:  x·u = 0, x·v = 0, u² = 0, u·v ≠ 0 spans HH^3, v² ≠ 0 spans HH^4, ...
+  Hence   HH*(k[x]/x²) ≅ k[x, u, v] / (x², xu, xv, u²),   |x|=0, |u|=1, |v|=2   (char ≠ 2).
+  ✔ u ∪ u = 0, as graded commutativity forces when 2 is invertible
+  ✔ v is not nilpotent: v∪(HH^k) ≠ 0 — HH* is infinite and finitely generated
+  
+  In characteristic 2 graded commutativity no longer kills squares of odd classes:
+    dims HH^0..4 over F_2: [2, 2, 2, 2, 2]
+    HH^1 × HH^1 → HH^2 structure constants: [[[1, 0], [0, 1]], [[0, 1], [0, 0]]]
+  ✔ char 2: some odd-degree class squares to a non-zero class
+
+==============================================================================
+4. The Gerstenhaber bracket:  HH^1 is a Lie algebra
+==============================================================================
+  f ∘ g = Σ_i ±f(.., g(..), ..);  [f, g] = f∘g - (-1)^{(m-1)(n-1)} g∘f  makes HH^{*+1}
+  a graded Lie algebra; on HH^1 it is the commutator of (outer) derivations.
+  Example: the Kronecker algebra  1 ⇉ 2  (arrows a, b).  Its outer derivations act on the
+  2-dimensional space span(a, b) by 2×2 matrices; scalars act innerly, so HH^1 ≅ gl_2/k ≅ pgl_2 ≅ sl_2 (char ≠ 2).
+    basis derivation h0: {('a',): {'a': 1}}
+    basis derivation h1: {('a',): {'b': 1}}
+    basis derivation h2: {('b',): {'a': 1}}
+    [h0, h1] = [0, -1, 0]
+    [h0, h2] = [0, 0, 1]
+    [h1, h2] = [-2, 0, 0]
+  ✔ dim HH^1(Kronecker) = 3
+  ✔ Killing form nondegenerate ⇒ HH^1 is semisimple, 3-dimensional: sl_2
+  ✔ [HH^1, HH^1] = HH^1 (perfect Lie algebra)
+
+==============================================================================
+5. Quivers: Happel's formula for hereditary algebras
+==============================================================================
+  For a path algebra kQ of a finite connected acyclic quiver:  HH^n = 0 for n ≥ 2 and
+     dim HH^1 = 1 - |Q_0| + Σ_{arrows α: i→j} dim e_j kQ e_i      (paths parallel to α).
+  ✔ A3 linear 1→2→3        HH^0..3 = [1, 0, 0, 0]   (Happel predicts HH^1 = 0)
+  ✔ A3 sink 1→2←3          HH^0..3 = [1, 0, 0, 0]   (Happel predicts HH^1 = 0)
+  ✔ Kronecker 1⇉2          HH^0..3 = [1, 3, 0, 0]   (Happel predicts HH^1 = 3)
+  ✔ 1⇉2→3                  HH^0..3 = [1, 3, 0, 0]   (Happel predicts HH^1 = 3)
+  ✔ triangle 1→2→3, 1→3    HH^0..3 = [1, 2, 0, 0]   (Happel predicts HH^1 = 2)
+  Trees are rigid (HH^1 = 0); multiple arrows and 'shortcut' paths create outer derivations.
+  
+  Adding relations can create HH^2 — e.g. the oriented 2-cycle with both length-2 paths zero:
+    HH^0..5 = [1, 1, 1, 1, 1, 1]   (not hereditary: infinitely many non-zero HH^n)
+
+==============================================================================
+6. Small categories and their category algebras kC
+==============================================================================
+  A finite category C gives the algebra kC: basis = morphisms, product = composition
+  (0 if not composable), identity = Σ 1_x.  Groups, monoids, posets, quivers are all special cases.
+    k[C2] over F_(0): HH^0..4 = [2, 0, 0, 0, 0]
+    k[C2] over F_3: HH^0..4 = [2, 0, 0, 0, 0]
+    k[C2] over F_2: HH^0..4 = [2, 2, 2, 2, 2]
+  ✔ F_2[C2] ≅ F_2[x]/x² (x = 1+g): same HH
+  ✔ Maschke: p ∤ |G| ⇒ kG separable ⇒ HH^{>0} = 0
+  
+  Centralizer decomposition:  HH*(kG) ≅ ⊕_{[g] conj. class} H*(C_G(g); k).
+  For S3 (classes: 1, transpositions, 3-cycles; centralizers S3, C2, C3):
+    F_3:  H*(S3)=[1, 0, 0, 1]  H*(C2)=[1, 0, 0, 0]  H*(C3)=[1, 1, 1, 1]
+  ✔ F_3[S3]: HH^0..3 = [3, 1, 1, 2] = sum of centralizer cohomologies
+    F_2:  H*(S3)=[1, 1, 1, 1]  H*(C2)=[1, 1, 1, 1]  H*(C3)=[1, 0, 0, 0]
+  ✔ F_2[S3]: HH^0..3 = [3, 2, 2, 2] = sum of centralizer cohomologies
+
+==============================================================================
+7. Baues–Wirsching cohomology of a small category
+==============================================================================
+  The factorization category F(C): objects are morphisms f of C; a map f → f' is a pair (u, v)
+  with f' = u∘f∘v.  A natural system is a functor D: F(C) → k-mod  (u_* = D(u,1), v^* = D(1,v)).
+  Cochains: F^n(C;D) = Π over chains x0 ←f1— x1 ←f2— ... ←fn— xn of D(f1∘...∘fn), with
+    (δF)(f1..f_{n+1}) = f1_* F(f2..) + Σ(-1)^i F(.., f_i∘f_{i+1}, ..) + (-1)^{n+1} f_{n+1}^* F(f1..fn).
+  Special natural systems:
+    • constant D = k           →  H_BW(C; k) = H*(BC; k), cohomology of the nerve;
+    • D(f) = M(cod f), M a functor C → k-mod   →  H*(C; M) = Ext_{kC}(k, M)  (functor cohomology);
+    • D(f) = k·Hom_C(dom f, cod f),  u_*g = u∘g, v^*g = g∘v   →  H_BW(C; D) ≅ HH*(kC).
+  
+  (a) Constant coefficients see the homotopy type of the nerve:
+  ✔ square    H_BW(C; k) = [1, 0, 0, 0]   — square has a minimum: contractible
+  ✔ crown     H_BW(C; k) = [1, 1, 0, 0]   — crown's order complex is a 4-cycle ≃ S¹
+  ✔ Kron      H_BW(C; k) = [1, 1, 0, 0]   — two parallel arrows: nerve ≃ S¹
+  ✔ S² poset  H_BW(C; k) = [1, 0, 1, 0]   — three levels of two points: join S⁰*S⁰*S⁰ ≃ S²
+  ✔ one-object category C2: H*(BC2;F_2)=H*(RP^∞;F_2) = [1, 1, 1, 1, 1]
+  
+  (b) Functor coefficients: C2 acting on k by the sign representation (p odd):
+  ✔ H*(C2; sign) = [0, 0, 0, 0, 0]  (no invariants, and |C2| invertible)
+  
+  (c) The comparison theorem  HH*(kC) ≅ H*_BW(C; k Hom(-,-)):
+      Normalized Hochschild cochains on composable non-identity morphisms (f1..fn) take values in
+      k·Hom(dom fn, cod f1) — exactly D(f1∘...∘fn).  The Hochschild and BW differentials agree term
+      by term; normalization doesn't change cohomology.  Numerically:
+  ✔ C2        F_(0): HH = [2, 0, 0, 0] = H_BW = [2, 0, 0, 0]   (BW complex dims [2, 4, 8, 16])
+  ✔ C2        F_2: HH = [2, 2, 2, 2] = H_BW = [2, 2, 2, 2]   (BW complex dims [2, 4, 8, 16])
+  ✔ C3        F_(0): HH = [3, 0, 0, 0] = H_BW = [3, 0, 0, 0]   (BW complex dims [3, 9, 27, 81])
+  ✔ crown     F_(0): HH = [1, 1, 0, 0] = H_BW = [1, 1, 0, 0]   (BW complex dims [4, 8, 12, 16])
+  ✔ square    F_(0): HH = [1, 0, 0, 0] = H_BW = [1, 0, 0, 0]   (BW complex dims [4, 9, 16, 25])
+  ✔ Kron      F_(0): HH = [1, 3, 0, 0] = H_BW = [1, 3, 0, 0]   (BW complex dims [2, 6, 10, 14])
+  ✔ S² poset  F_(0): HH = [1, 0, 1, 0] = H_BW = [1, 0, 1, 0]   (BW complex dims [6, 18, 38, 66])
+  ✔ S3        F_(0): HH = [3, 0, 0] = H_BW = [3, 0, 0]   (BW complex dims [6, 36, 216])
+  ✔ S3        F_2: HH = [3, 2, 2] = H_BW = [3, 2, 2]   (BW complex dims [6, 36, 216])
+
+==============================================================================
+8. Gerstenhaber–Schack: incidence algebras of posets
+==============================================================================
+  For a finite poset P with incidence algebra kP (= category algebra of P):
+     HH*(kP) ≅ H*(Δ(P); k)   — simplicial cohomology of the order complex.
+  So for posets Hochschild cohomology is a homotopy invariant of the nerve, and both of the
+  natural systems from §7 give the same answer:
+  ✔ square    HH*(kP) = [1, 0, 0, 0] = H*(ΔP) = [1, 0, 0, 0]
+  ✔ crown     HH*(kP) = [1, 1, 0, 0] = H*(ΔP) = [1, 1, 0, 0]
+  ✔ S² poset  HH*(kP) = [1, 0, 1, 0] = H*(ΔP) = [1, 0, 1, 0]
+  Every finite simplicial complex is (up to subdivision) an order complex, so every finite
+  simplicial cohomology arises as a Hochschild cohomology of a finite-dimensional algebra.
+  ✔ S² poset: HH^4 = 0, so the cup square of the HH^2 class is 0 (as in H*(S²))
+
+All checks passed.  © Computational Classnotes · CC BY-NC-SA 4.0

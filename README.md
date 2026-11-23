@@ -13,10 +13,11 @@ An exact Wolfram Language evaluator for the Hochschild cohomology of finite-dime
 | `HochschildApplications.nb` | The six applications as runnable examples. |
 | `HochschildApplicationsSurvey.nb` | A literature survey of where Hochschild cohomology is applied, with clickable references, typeset theory and the worked examples. |
 | `HochschildBookNotation.nb` | Hochschild algebra written the way the books write it, with infix ⊗ and ⊕ (and ∘ for Gerstenhaber composition). For new learners it includes a geometric introduction to cochains with 2D and 3D drawings, a dictionary between the notebook's objects and the books' notation, the Jacobi identity for the Gerstenhaber bracket, and motivating examples for HH⁰, HH¹ and HH². |
+| `python/` | A pure-Python companion (NumPy only, exact over 𝔽ₚ). It covers Hochschild cohomology of quiver and category algebras, cup products, the Gerstenhaber bracket, and Baues–Wirsching cohomology of small categories, with a narrated tutorial of 48 checks. See `python/README.md`. |
 
 ## Requirements
 
-Mathematica or Wolfram Engine. The notebooks were built and tested with Mathematica 15.0.
+Mathematica or Wolfram Engine for the `.wl` and `.nb` files; Python 3 with NumPy for `python/`. The notebooks were built and tested with Mathematica 15.0.
 
 ## Usage
 
